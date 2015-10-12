@@ -1,0 +1,19 @@
+package "paCodec"
+version "1.0"
+purpose "An utility validate all the arguments for the paCodec application"
+
+by "Paulo Penicheiro e Ruben Miguel"
+
+# Definição das opções
+option "all" a "opção -a / -all" optional
+
+#opcao encode necessita obbrigadtoriamente de passar um ficheiro por argumento assim como o ficheiro de diccionarios padrado
+option "encode" e "codifica o ficheiro de imagem typestr= "filename" string optional
+
+
+#opcao decode necessita obbrigadtoriamente de passar um ficheiro por argumento assim como o ficheiro de diccionarios padrado
+option "decode" d "descodifica o ficheiro de imagem" typestr= "filename" string optional
+
+
+option "help" h optional
+oprtion "about" s optional
