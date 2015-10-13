@@ -39,8 +39,7 @@ struct gengetopt_args_info
 {
   const char *help_help; /**< @brief Print help and exit help description.  */
   const char *version_help; /**< @brief Print version and exit help description.  */
-  const char *all_help; /**< @brief opção -a / -all help description.  */
-  const char *about_help; /**< @brief About the Authores of this applicattion help description.  */
+  const char *about_help; /**< @brief About the Authores of this application help description.  */
   char * encode_arg;	/**< @brief encodes the file image.  */
   char * encode_orig;	/**< @brief encodes the file image original value given at command line.  */
   const char *encode_help; /**< @brief encodes the file image help description.  */
@@ -50,7 +49,6 @@ struct gengetopt_args_info
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
-  unsigned int all_given ;	/**< @brief Whether all was given.  */
   unsigned int about_given ;	/**< @brief Whether about was given.  */
   unsigned int encode_given ;	/**< @brief Whether encode was given.  */
   unsigned int decode_given ;	/**< @brief Whether decode was given.  */

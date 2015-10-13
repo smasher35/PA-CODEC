@@ -4,8 +4,7 @@ purpose "An utility validate all the arguments for the paCodec application"
 #by "Paulo Penicheiro e Ruben Miguel"
 
 # Definição das opções
-option "all" a "opção -a / -all" optional
-option "about" s "About the Authores of this applicattion" optional 
+option "about" a "About the Authores of this application" optional 
 
 
 

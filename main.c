@@ -36,7 +36,6 @@ int main(int argc, char *argv[])
 
 	/** parse the user given parameters with gengetopt */
 	if (parser_ret != 0) {
-
 		fprintf(stderr, "ERROR while calling cmdline_parser\n");
 		exit(1);
 
@@ -47,11 +46,11 @@ int main(int argc, char *argv[])
 
 	/**Missing Arguments or incorrect arguments  ate least one argument must be provided*/
 	if (argc < 2) {
-	    printf("===================== HELP: Avaiable Apllication arguments: =====================\n\n");
+	    printf("===================== HELP: Some Arguments Avaiable: =====================\n\n");
 		printf("--encode --> use this to encode an image file, don't forget to supply the file to encode\n");
 		printf("--decode --> use this to decode an image file, don't forget to supply the file to decode\n");
 		printf("--decode-dir --> use this to decode images in a given directory, suply the directory path\n");
-		printf("--PSNR --> use this to calculate .... between the original and decoded file, must suply both files as arguments\n");
+		printf("--PSNR --> use this to calculate .... between the original and decoded file, must supply both files as arguments\n");
 		printf("--dict --> use this to suply the dictionary file while encoding or decoding images\n");
 		printf("--about --> use this to know about the this app programmers\n");
 		printf("--help --> to know all the arguments avaiable\n\n");
@@ -60,15 +59,11 @@ int main(int argc, char *argv[])
 	}
 
 	/** About the authors */
-	int i;
-	for (i = 0; i < argc; ++i)
-	{
-		/* code */
-		if (strcmp(argv[i],"--about") ==0 || (strcmp(argv[i], "-s") ==0)) {
-	 		about();
-	 	}
-	}
-	  
+	 if (args_info.about_given){
+	 	about();
+	 }
+
+	 
 
 	/** free the memory allocated by gengetop */
 	cmdline_parser_free (&args_info);

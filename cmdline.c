@@ -36,8 +36,7 @@ const char *gengetopt_args_info_description = "";
 const char *gengetopt_args_info_help[] = {
   "  -h, --help             Print help and exit",
   "  -V, --version          Print version and exit",
-  "  -a, --all              opção -a / -all",
-  "  -s, --about            About the Authores of this applicattion",
+  "  -a, --about            About the Authores of this application",
   "  -e, --encode=filename  encodes the file image",
   "  -d, --decode=filename  decodes the file image",
     0
@@ -65,7 +64,6 @@ void clear_given (struct gengetopt_args_info *args_info)
 {
   args_info->help_given = 0 ;
   args_info->version_given = 0 ;
-  args_info->all_given = 0 ;
   args_info->about_given = 0 ;
   args_info->encode_given = 0 ;
   args_info->decode_given = 0 ;
@@ -89,10 +87,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
 
   args_info->help_help = gengetopt_args_info_help[0] ;
   args_info->version_help = gengetopt_args_info_help[1] ;
-  args_info->all_help = gengetopt_args_info_help[2] ;
-  args_info->about_help = gengetopt_args_info_help[3] ;
-  args_info->encode_help = gengetopt_args_info_help[4] ;
-  args_info->decode_help = gengetopt_args_info_help[5] ;
+  args_info->about_help = gengetopt_args_info_help[2] ;
+  args_info->encode_help = gengetopt_args_info_help[3] ;
+  args_info->decode_help = gengetopt_args_info_help[4] ;
   
 }
 
@@ -214,8 +211,6 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "help", 0, 0 );
   if (args_info->version_given)
     write_into_file(outfile, "version", 0, 0 );
-  if (args_info->all_given)
-    write_into_file(outfile, "all", 0, 0 );
   if (args_info->about_given)
     write_into_file(outfile, "about", 0, 0 );
   if (args_info->encode_given)
@@ -460,14 +455,13 @@ cmdline_parser_internal (
       static struct option long_options[] = {
         { "help",	0, NULL, 'h' },
         { "version",	0, NULL, 'V' },
-        { "all",	0, NULL, 'a' },
-        { "about",	0, NULL, 's' },
+        { "about",	0, NULL, 'a' },
         { "encode",	1, NULL, 'e' },
         { "decode",	1, NULL, 'd' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVase:d:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVae:d:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -483,26 +477,14 @@ cmdline_parser_internal (
           cmdline_parser_free (&local_args_info);
           exit (EXIT_SUCCESS);
 
-        case 'a':	/* opção -a / -all.  */
-        
-        
-          if (update_arg( 0 , 
-               0 , &(args_info->all_given),
-              &(local_args_info.all_given), optarg, 0, 0, ARG_NO,
-              check_ambiguity, override, 0, 0,
-              "all", 'a',
-              additional_error))
-            goto failure;
-        
-          break;
-        case 's':	/* About the Authores of this applicattion.  */
+        case 'a':	/* About the Authores of this application.  */
         
         
           if (update_arg( 0 , 
                0 , &(args_info->about_given),
               &(local_args_info.about_given), optarg, 0, 0, ARG_NO,
               check_ambiguity, override, 0, 0,
-              "about", 's',
+              "about", 'a',
               additional_error))
             goto failure;
         
