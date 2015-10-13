@@ -46,13 +46,25 @@ struct gengetopt_args_info
   char * decode_arg;	/**< @brief decodes the file image.  */
   char * decode_orig;	/**< @brief decodes the file image original value given at command line.  */
   const char *decode_help; /**< @brief decodes the file image help description.  */
+  char ** decode_dir_arg;	/**< @brief decodes all image files in the given directory.  */
+  char ** decode_dir_orig;	/**< @brief decodes all image files in the given directory original value given at command line.  */
+  unsigned int decode_dir_min; /**< @brief decodes all image files in the given directory's minimum occurreces */
+  unsigned int decode_dir_max; /**< @brief decodes all image files in the given directory's maximum occurreces */
+  const char *decode_dir_help; /**< @brief decodes all image files in the given directory help description.  */
+  char * PSNR_arg;	/**< @brief calculates codec quality between original and decoded file.  */
+  char * PSNR_orig;	/**< @brief calculates codec quality between original and decoded file original value given at command line.  */
+  const char *PSNR_help; /**< @brief calculates codec quality between original and decoded file help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int about_given ;	/**< @brief Whether about was given.  */
   unsigned int encode_given ;	/**< @brief Whether encode was given.  */
   unsigned int decode_given ;	/**< @brief Whether decode was given.  */
+  unsigned int decode_dir_given ;	/**< @brief Whether decode-dir was given.  */
+  int decode_dir_group ; /**< @brief Whether decode-dir's was updated.  */
+  unsigned int PSNR_given ;	/**< @brief Whether PSNR was given.  */
 
+  int group1_group_counter; /**< @brief Counter for group group1 */
 } ;
 
 /** @brief The additional parameters to pass to parser functions */
