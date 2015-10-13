@@ -37,6 +37,7 @@ const char *gengetopt_args_info_help[] = {
   "  -h, --help             Print help and exit",
   "  -V, --version          Print version and exit",
   "  -a, --all              opção -a / -all",
+  "  -s, --about            About the Authores of this applicattion",
   "  -e, --encode=filename  encodes the file image",
   "  -d, --decode=filename  decodes the file image",
     0
@@ -65,6 +66,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->help_given = 0 ;
   args_info->version_given = 0 ;
   args_info->all_given = 0 ;
+  args_info->about_given = 0 ;
   args_info->encode_given = 0 ;
   args_info->decode_given = 0 ;
 }
@@ -88,8 +90,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->help_help = gengetopt_args_info_help[0] ;
   args_info->version_help = gengetopt_args_info_help[1] ;
   args_info->all_help = gengetopt_args_info_help[2] ;
-  args_info->encode_help = gengetopt_args_info_help[3] ;
-  args_info->decode_help = gengetopt_args_info_help[4] ;
+  args_info->about_help = gengetopt_args_info_help[3] ;
+  args_info->encode_help = gengetopt_args_info_help[4] ;
+  args_info->decode_help = gengetopt_args_info_help[5] ;
   
 }
 
@@ -213,6 +216,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "version", 0, 0 );
   if (args_info->all_given)
     write_into_file(outfile, "all", 0, 0 );
+  if (args_info->about_given)
+    write_into_file(outfile, "about", 0, 0 );
   if (args_info->encode_given)
     write_into_file(outfile, "encode", args_info->encode_orig, 0);
   if (args_info->decode_given)
@@ -456,12 +461,13 @@ cmdline_parser_internal (
         { "help",	0, NULL, 'h' },
         { "version",	0, NULL, 'V' },
         { "all",	0, NULL, 'a' },
+        { "about",	0, NULL, 's' },
         { "encode",	1, NULL, 'e' },
         { "decode",	1, NULL, 'd' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVae:d:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVase:d:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -485,6 +491,18 @@ cmdline_parser_internal (
               &(local_args_info.all_given), optarg, 0, 0, ARG_NO,
               check_ambiguity, override, 0, 0,
               "all", 'a',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 's':	/* About the Authores of this applicattion.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->about_given),
+              &(local_args_info.about_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "about", 's',
               additional_error))
             goto failure;
         

@@ -45,15 +45,30 @@ int main(int argc, char *argv[])
 
 	/** MAIN CODE */
 
-	if (args_info.all_given)
-	{
-		printf("All Options detected\n" );
+	/**Missing Arguments or incorrect arguments  ate least one argument must be provided*/
+	if (argc < 2) {
+	    printf("===================== HELP: Avaiable Apllication arguments: =====================\n\n");
+		printf("--encode --> use this to encode an image file, don't forget to supply the file to encode\n");
+		printf("--decode --> use this to decode an image file, don't forget to supply the file to decode\n");
+		printf("--decode-dir --> use this to decode images in a given directory, suply the directory path\n");
+		printf("--PSNR --> use this to calculate .... between the original and decoded file, must suply both files as arguments\n");
+		printf("--dict --> use this to suply the dictionary file while encoding or decoding images\n");
+		printf("--about --> use this to know about the this app programmers\n");
+		printf("--help --> to know all the arguments avaiable\n\n");
+		printf("================================================================================\n");
+		exit(1);
 	}
 
-	
-
-
-	
+	/** About the authors */
+	int i;
+	for (i = 0; i < argc; ++i)
+	{
+		/* code */
+		if (strcmp(argv[i],"--about") ==0 || (strcmp(argv[i], "-s")==0)) {
+	 		about();
+	 	}
+	}
+	  
 
 	/** free the memory allocated by gengetop */
 	cmdline_parser_free (&args_info);

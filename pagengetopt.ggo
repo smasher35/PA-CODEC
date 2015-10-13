@@ -6,6 +6,7 @@ purpose "An utility validate all the arguments for the paCodec application"
 
 # Definição das opções
 option "all" a "opção -a / -all" optional
+option "about" s "About the Authores of this applicattion" optional 
 
 
 #opcao encode necessita obbrigadtoriamente de passar um ficheiro por argumento assim como o ficheiro de diccionarios padrado
