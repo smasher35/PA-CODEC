@@ -1,0 +1,3 @@
+/*
+  Functions prototypes for utils.c
+*/

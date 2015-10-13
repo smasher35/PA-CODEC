@@ -16,13 +16,13 @@ IFLAGS=-br -brs -npsl -ce -cli4
 
 
 # Name of the executable
-PROGRAM=pa
+PROGRAM=paCodec
 
 # Prefix for the gengetopt file (if gengetopt is used)
-PROGRAM_OPT=exemplo
+PROGRAM_OPT=pagengetopt
 
 # Object files required to build the executable
-PROGRAM_OBJS=main.o debug.o memory.o ${PROGRAM_OPT}.o
+PROGRAM_OBJS=main.o debug.o memory.o utils.o ${PROGRAM_OPT}.o
 
 # Clean and all are not files
 .PHONY: clean all docs indent debugon
@@ -37,11 +37,12 @@ ${PROGRAM}: ${PROGRAM_OBJS}
 	${CC} -o $@ ${PROGRAM_OBJS} ${LIBS}
 
 # Dependencies
-main.o: main.c debug.h memory.h ${PROGRAM_OPT}.h
+main.o: main.c debug.h memory.h utils.h ${PROGRAM_OPT}.h
 ${PROGRAM_OPT}.o: ${PROGRAM_OPT}.c ${PROGRAM_OPT}.h
 
 debug.o: debug.c debug.h
 memory.o: memory.c memory.h
+utils.o: utils.c
 
 #how to create an object file (.o) from C file (.c)
 .c.o:

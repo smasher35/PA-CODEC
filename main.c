@@ -2,7 +2,7 @@
 * @file main.c
 * @brief Description
 * @date 01-01-2006
-* @author 2130628 - Paulo Penicheiro e
+* @author 2130628 - Paulo Penicheiro e Ruben Miguel
 * @ version 1 
 */
 
@@ -24,7 +24,8 @@
 
 #include "debug.h"
 #include "memory.h"
-#include "exemplo.h"
+#include "utils.h"
+#include "pagengetopt.h"
 
 int main(int argc, char *argv[])
 {
@@ -49,10 +50,7 @@ int main(int argc, char *argv[])
 		printf("All Options detected\n" );
 	}
 
-	if (args_info.ficheiro_given)
-	{
-		printf("Ficheiro %s\n", args_info.ficheiro_arg);
-	}
+	
 
 
 	
