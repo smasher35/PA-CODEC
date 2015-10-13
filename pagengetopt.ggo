@@ -1,7 +1,6 @@
 package "paCodec"
 version "1.0"
 purpose "An utility validate all the arguments for the paCodec application"
-
 #by "Paulo Penicheiro e Ruben Miguel"
 
 # Definição das opções
@@ -9,13 +8,19 @@ option "all" a "opção -a / -all" optional
 option "about" s "About the Authores of this applicattion" optional 
 
 
+
 #opcao encode necessita obbrigadtoriamente de passar um ficheiro por argumento assim como o ficheiro de diccionarios padrado
 option "encode" e "encodes the file image" typestr= "filename" string optional
 
-
+#option "dict" r "supllies the dictonary for the encoding/decoding"  typestr= "filename" obrigatorio caso seja dado --encode ou --decode ou --decode-dir
 
 #opcao decode necessita obbrigadtoriamente de passar um ficheiro por argumento assim como o ficheiro de diccionarios padrado
 option "decode" d "decodes the file image" typestr= "filename" string optional
+#option "decode-dir" f "decodes all image files in the given directory"  typestr= "directory" optional
+
+
+#option "PSNR" p "calculates ...  between original and decoded file" typestr= "filename" string  typestr= "filename" string optional
+
 
 
 

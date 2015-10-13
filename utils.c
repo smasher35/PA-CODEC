@@ -1,6 +1,10 @@
-/*
-  This file will hold every function that is common to every other file
-*/
+/**
+ * @file utils.c
+ * @brief Description - this files holds common functions related to the first project delivery, in program paCodec
+ * @author Paulo Penicheiro nº 2130628 Ruben Miguel nº 2130
+ * @date Novembro - 2015
+ * @version 1 
+ */
 
 
 /** This function proveides information about the programmers of this application */
@@ -13,4 +17,7 @@ void about(){
 	printf("* 2015 - 2016                                           *\n");
 	printf("=========================================================\n");
 }
-		
+
+
+
+

@@ -1,8 +1,8 @@
 /**
 * @file main.c
-* @brief Description
-* @date 01-01-2006
-* @author 2130628 - Paulo Penicheiro e Ruben Miguel
+* @brief Description - main file of the paCodec application
+* @november 2015
+* @author Paulo Penicheiro nº 2130628 e Ruben Miguel nº 2130
 * @ version 1 
 */
 
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 	for (i = 0; i < argc; ++i)
 	{
 		/* code */
-		if (strcmp(argv[i],"--about") ==0 || (strcmp(argv[i], "-s")==0)) {
+		if (strcmp(argv[i],"--about") ==0 || (strcmp(argv[i], "-s") ==0)) {
 	 		about();
 	 	}
 	}
