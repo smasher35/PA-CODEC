@@ -54,6 +54,15 @@ struct gengetopt_args_info
   char * PSNR_arg;	/**< @brief calculates codec quality between original and decoded file.  */
   char * PSNR_orig;	/**< @brief calculates codec quality between original and decoded file original value given at command line.  */
   const char *PSNR_help; /**< @brief calculates codec quality between original and decoded file help description.  */
+  char * parallel_encode_arg;	/**< @brief Encoding using threads.  */
+  char * parallel_encode_orig;	/**< @brief Encoding using threads original value given at command line.  */
+  const char *parallel_encode_help; /**< @brief Encoding using threads help description.  */
+  char * dict_arg;	/**< @brief supllies the dictonary for the encoding/decoding.  */
+  char * dict_orig;	/**< @brief supllies the dictonary for the encoding/decoding original value given at command line.  */
+  const char *dict_help; /**< @brief supllies the dictonary for the encoding/decoding help description.  */
+  int threads_arg;	/**< @brief Number of threads used to encode the image.  */
+  char * threads_orig;	/**< @brief Number of threads used to encode the image original value given at command line.  */
+  const char *threads_help; /**< @brief Number of threads used to encode the image help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -63,6 +72,9 @@ struct gengetopt_args_info
   unsigned int decode_dir_given ;	/**< @brief Whether decode-dir was given.  */
   int decode_dir_group ; /**< @brief Whether decode-dir's was updated.  */
   unsigned int PSNR_given ;	/**< @brief Whether PSNR was given.  */
+  unsigned int parallel_encode_given ;	/**< @brief Whether parallel-encode was given.  */
+  unsigned int dict_given ;	/**< @brief Whether dict was given.  */
+  unsigned int threads_given ;	/**< @brief Whether threads was given.  */
 
   int group1_group_counter; /**< @brief Counter for group group1 */
 } ;

@@ -2,7 +2,7 @@
 * @file main.c
 * @brief Description - main file of the paCodec application
 * @november 2015
-* @author Paulo Penicheiro nº 2130628 e Ruben Miguel nº 2130
+* @author Paulo Penicheiro nº 2130628 e Ruben Miguel nº 2130664
 * @ version 1 
 */
 

@@ -11,19 +11,19 @@ defgroup "group1" groupdesc="Mandatory Group" required
 groupoption "about" a "About the Authores of this application" group="group1" 
 
 #opcao encode necessita obbrigadtoriamente de passar um ficheiro por argumento assim como o ficheiro de diccionarios padrao
-groupoption "encode" e "encodes the file image" group="group1" typestr= "filename" string 
+groupoption "encode" e "encodes the file image" group="group1" typestr= "filename" string dependon="dict"
 
 #opcao decode necessita obbrigadtoriamente de passar um ficheiro por argumento assim como o ficheiro de diccionarios padrao
-groupoption "decode" d "decodes the file image" group="group1" typestr= "filename" string 
+groupoption "decode" d "decodes the file image" group="group1" typestr= "filename" string dependon="dict"
 
 
-groupoption "decode-dir" f "decodes all image files in the given directory" group="group1" typestr= "directory" multiple(2) string
+groupoption "decode-dir" f "decodes all image files in the given directory" group="group1" typestr= "directory" multiple(2) string dependon="dict"
 
 
-groupoption "PSNR" p "calculates codec quality between original and decoded file" group="group1" typestr= "original,decoded files" string 
+groupoption "PSNR" P "calculates codec quality between original and decoded file" group="group1" typestr= "original,decoded files" string 
 
 
-#groupoption "parallel-encode" p "Encoding using threads" group="group1" typestr= "filename" string 
+groupoption "parallel-encode" p "Encoding using threads" group="group1" typestr= "filename" string dependon="threads" 
 
 #---------------------------------------- End Group 1 ----------------------------------------------------
 
@@ -34,9 +34,8 @@ groupoption "PSNR" p "calculates codec quality between original and decoded file
 #---------------------------------------- Other Options ----------------------------------------------------
 
 #Opçoes independentes
-#option "dict" r "supllies the dictonary for the encoding/decoding"  typestr= "filename" obrigatorio caso seja dado --encode ou --decode ou --decode-dir
-
-#option "threads" t "Number of threads used to encode the image"
+option "dict" D "supllies the dictonary for the encoding/decoding"  typestr= "filename" string optional	
+option "threads" t "Number of threads used to encode the image" typestr= "n threads" int optional dependon="dict"
 
 
 #---------------------------------------- End Other Options ----------------------------------------------------

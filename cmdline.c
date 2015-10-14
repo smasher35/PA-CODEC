@@ -41,12 +41,16 @@ const char *gengetopt_args_info_help[] = {
   "  -e, --encode=filename         encodes the file image",
   "  -d, --decode=filename         decodes the file image",
   "  -f, --decode-dir=directory    decodes all image files in the given directory",
-  "  -p, --PSNR=original,decoded files\n                                calculates codec quality between original and\n                                  decoded file",
+  "  -P, --PSNR=original,decoded files\n                                calculates codec quality between original and\n                                  decoded file",
+  "  -p, --parallel-encode=filename\n                                Encoding using threads",
+  "  -D, --dict=filename           supllies the dictonary for the\n                                  encoding/decoding",
+  "  -t, --threads=n threads       Number of threads used to encode the image",
     0
 };
 
 typedef enum {ARG_NO
   , ARG_STRING
+  , ARG_INT
 } cmdline_parser_arg_type;
 
 static
@@ -74,6 +78,9 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->decode_given = 0 ;
   args_info->decode_dir_given = 0 ; args_info->decode_dir_group = 0 ;
   args_info->PSNR_given = 0 ;
+  args_info->parallel_encode_given = 0 ;
+  args_info->dict_given = 0 ;
+  args_info->threads_given = 0 ;
   args_info->group1_group_counter = 0 ;
 }
 
@@ -89,6 +96,11 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->decode_dir_orig = NULL;
   args_info->PSNR_arg = NULL;
   args_info->PSNR_orig = NULL;
+  args_info->parallel_encode_arg = NULL;
+  args_info->parallel_encode_orig = NULL;
+  args_info->dict_arg = NULL;
+  args_info->dict_orig = NULL;
+  args_info->threads_orig = NULL;
   
 }
 
@@ -106,6 +118,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->decode_dir_min = 2;
   args_info->decode_dir_max = 2;
   args_info->PSNR_help = gengetopt_args_info_help[7] ;
+  args_info->parallel_encode_help = gengetopt_args_info_help[8] ;
+  args_info->dict_help = gengetopt_args_info_help[9] ;
+  args_info->threads_help = gengetopt_args_info_help[10] ;
   
 }
 
@@ -186,6 +201,7 @@ free_string_field (char **s)
 
 /** @brief generic value variable */
 union generic_value {
+    int int_arg;
     char *string_arg;
     const char *default_string_arg;
 };
@@ -240,6 +256,11 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_multiple_string_field (args_info->decode_dir_given, &(args_info->decode_dir_arg), &(args_info->decode_dir_orig));
   free_string_field (&(args_info->PSNR_arg));
   free_string_field (&(args_info->PSNR_orig));
+  free_string_field (&(args_info->parallel_encode_arg));
+  free_string_field (&(args_info->parallel_encode_orig));
+  free_string_field (&(args_info->dict_arg));
+  free_string_field (&(args_info->dict_orig));
+  free_string_field (&(args_info->threads_orig));
   
   
 
@@ -291,6 +312,12 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
   write_multiple_into_file(outfile, args_info->decode_dir_given, "decode-dir", args_info->decode_dir_orig, 0);
   if (args_info->PSNR_given)
     write_into_file(outfile, "PSNR", args_info->PSNR_orig, 0);
+  if (args_info->parallel_encode_given)
+    write_into_file(outfile, "parallel-encode", args_info->parallel_encode_orig, 0);
+  if (args_info->dict_given)
+    write_into_file(outfile, "dict", args_info->dict_orig, 0);
+  if (args_info->threads_given)
+    write_into_file(outfile, "threads", args_info->threads_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -491,6 +518,9 @@ reset_group_group1(struct gengetopt_args_info *args_info)
   args_info->PSNR_given = 0 ;
   free_string_field (&(args_info->PSNR_arg));
   free_string_field (&(args_info->PSNR_orig));
+  args_info->parallel_encode_given = 0 ;
+  free_string_field (&(args_info->parallel_encode_arg));
+  free_string_field (&(args_info->parallel_encode_orig));
 
   args_info->group1_group_counter = 0;
 }
@@ -575,6 +605,31 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
   
 
   /* checks for dependences among options */
+  if (args_info->encode_given && ! args_info->dict_given)
+    {
+      fprintf (stderr, "%s: '--encode' ('-e') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
+      error_occurred = 1;
+    }
+  if (args_info->decode_given && ! args_info->dict_given)
+    {
+      fprintf (stderr, "%s: '--decode' ('-d') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
+      error_occurred = 1;
+    }
+  if (args_info->decode_dir_given && ! args_info->dict_given)
+    {
+      fprintf (stderr, "%s: '--decode-dir' ('-f') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
+      error_occurred = 1;
+    }
+  if (args_info->parallel_encode_given && ! args_info->threads_given)
+    {
+      fprintf (stderr, "%s: '--parallel-encode' ('-p') option depends on option 'threads'%s\n", prog_name, (additional_error ? additional_error : ""));
+      error_occurred = 1;
+    }
+  if (args_info->threads_given && ! args_info->dict_given)
+    {
+      fprintf (stderr, "%s: '--threads' ('-t') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
+      error_occurred = 1;
+    }
 
   return error_occurred;
 }
@@ -645,6 +700,9 @@ int update_arg(void *field, char **orig_field,
     val = possible_values[found];
 
   switch(arg_type) {
+  case ARG_INT:
+    if (val) *((int *)field) = strtol (val, &stop_char, 0);
+    break;
   case ARG_STRING:
     if (val) {
       string_field = (char **)field;
@@ -657,6 +715,17 @@ int update_arg(void *field, char **orig_field,
     break;
   };
 
+  /* check numeric conversion */
+  switch(arg_type) {
+  case ARG_INT:
+    if (val && !(stop_char && *stop_char == '\0')) {
+      fprintf(stderr, "%s: invalid numeric value: %s\n", package_name, val);
+      return 1; /* failure */
+    }
+    break;
+  default:
+    ;
+  };
 
   /* store the original value */
   switch(arg_type) {
@@ -760,6 +829,8 @@ void update_multiple_arg(void *field, char ***orig_field,
     *orig_field = (char **) realloc (*orig_field, (field_given + prev_given) * sizeof (char *));
 
     switch(arg_type) {
+    case ARG_INT:
+      *((int **)field) = (int *)realloc (*((int **)field), (field_given + prev_given) * sizeof (int)); break;
     case ARG_STRING:
       *((char ***)field) = (char **)realloc (*((char ***)field), (field_given + prev_given) * sizeof (char *)); break;
     default:
@@ -771,6 +842,8 @@ void update_multiple_arg(void *field, char ***orig_field,
         tmp = list;
         
         switch(arg_type) {
+        case ARG_INT:
+          (*((int **)field))[i + field_given] = tmp->arg.int_arg; break;
         case ARG_STRING:
           (*((char ***)field))[i + field_given] = tmp->arg.string_arg; break;
         default:
@@ -783,6 +856,12 @@ void update_multiple_arg(void *field, char ***orig_field,
   } else { /* set the default value */
     if (default_value && ! field_given) {
       switch(arg_type) {
+      case ARG_INT:
+        if (! *((int **)field)) {
+          *((int **)field) = (int *)malloc (sizeof (int));
+          (*((int **)field))[0] = default_value->int_arg; 
+        }
+        break;
       case ARG_STRING:
         if (! *((char ***)field)) {
           *((char ***)field) = (char **)malloc (sizeof (char *));
@@ -843,11 +922,14 @@ cmdline_parser_internal (
         { "encode",	1, NULL, 'e' },
         { "decode",	1, NULL, 'd' },
         { "decode-dir",	1, NULL, 'f' },
-        { "PSNR",	1, NULL, 'p' },
+        { "PSNR",	1, NULL, 'P' },
+        { "parallel-encode",	1, NULL, 'p' },
+        { "dict",	1, NULL, 'D' },
+        { "threads",	1, NULL, 't' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVae:d:f:p:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVae:d:f:P:p:D:t:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -922,7 +1004,7 @@ cmdline_parser_internal (
             }
         
           break;
-        case 'p':	/* calculates codec quality between original and decoded file.  */
+        case 'P':	/* calculates codec quality between original and decoded file.  */
         
           if (args_info->group1_group_counter && override)
             reset_group_group1 (args_info);
@@ -932,7 +1014,46 @@ cmdline_parser_internal (
                &(args_info->PSNR_orig), &(args_info->PSNR_given),
               &(local_args_info.PSNR_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "PSNR", 'p',
+              "PSNR", 'P',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'p':	/* Encoding using threads.  */
+        
+          if (args_info->group1_group_counter && override)
+            reset_group_group1 (args_info);
+          args_info->group1_group_counter += 1;
+        
+          if (update_arg( (void *)&(args_info->parallel_encode_arg), 
+               &(args_info->parallel_encode_orig), &(args_info->parallel_encode_given),
+              &(local_args_info.parallel_encode_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "parallel-encode", 'p',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'D':	/* supllies the dictonary for the encoding/decoding.  */
+        
+        
+          if (update_arg( (void *)&(args_info->dict_arg), 
+               &(args_info->dict_orig), &(args_info->dict_given),
+              &(local_args_info.dict_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "dict", 'D',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 't':	/* Number of threads used to encode the image.  */
+        
+        
+          if (update_arg( (void *)&(args_info->threads_arg), 
+               &(args_info->threads_orig), &(args_info->threads_given),
+              &(local_args_info.threads_given), optarg, 0, 0, ARG_INT,
+              check_ambiguity, override, 0, 0,
+              "threads", 't',
               additional_error))
             goto failure;
         
