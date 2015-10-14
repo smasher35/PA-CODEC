@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
 	/** parse the user given parameters with gengetopt */
 	if (parser_ret != 0) {
-		fprintf(stderr, "ERROR while calling cmdline_parser\n");
+		fprintf(stderr, "[ERROR]  while calling cmdline_parser\n");
 		exit(1);
 
 	}
@@ -62,6 +62,27 @@ int main(int argc, char *argv[])
 	 if (args_info.about_given){
 	 	about();
 	 }
+
+
+
+
+
+
+	 /** -------------------  Entrega  -------------------------2 */
+	 /** --encode aargument fiven*/
+	 if(args_info.encode_given){
+
+	 	printf("\n[TO BE DONE] option not implemented yet!!!\n");
+	 }
+
+	 if(args_info.parallel_encode_given){
+
+	 	printf("\n[TO BE DONE] option not implemented yet!!!\n");
+	 }
+
+
+
+
 
 	 
 
