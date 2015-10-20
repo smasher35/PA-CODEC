@@ -1,6 +1,3 @@
-#ifndef __UTILS_C__
-#define __UTILS_C__
-
 /**
  * @file utils.c
  * @brief Description - this files holds common functions related to the first project delivery, in program paCodec
@@ -42,21 +39,23 @@ void about(void){
 void read_file(char *filename){
 	FILE *file;
 	file = fopen(filename, "r");
+	pgm_t pgm = NULL;
+	char pgm_type[3];
+
 
 	if (file == NULL)
 	{
-			ERROR(2, "Can't open file %s", filename);			
+		ERROR(2, "Can't open file %s", filename);			
+	}
+	else
+	{
+		fgets(pgm_type, sizeof(pgm_type), filename);
+		printf("%s\n", pgm_type);
 	}
 
+	fclose (file);
 	
 
 
 
 }
-
-
-
-
-
-
-#endif

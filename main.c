@@ -62,6 +62,9 @@ int main(int argc, char *argv[])
 	 if (args_info.about_given){
 	 	about();
 	 }
+	 if (args_info.decode_given){
+	 	read_file(args_info.decode_arg[0]);
+	 }
 
 
 

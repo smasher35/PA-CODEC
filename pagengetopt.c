@@ -76,8 +76,8 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->about_given = 0 ;
   args_info->encode_given = 0 ;
   args_info->decode_given = 0 ;
-  args_info->decode_dir_given = 0 ; args_info->decode_dir_group = 0 ;
-  args_info->PSNR_given = 0 ;
+  args_info->decode_dir_given = 0 ;
+  args_info->PSNR_given = 0 ; args_info->PSNR_group = 0 ;
   args_info->parallel_encode_given = 0 ;
   args_info->dict_given = 0 ;
   args_info->threads_given = 0 ;
@@ -115,9 +115,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->encode_help = gengetopt_args_info_help[4] ;
   args_info->decode_help = gengetopt_args_info_help[5] ;
   args_info->decode_dir_help = gengetopt_args_info_help[6] ;
-  args_info->decode_dir_min = 2;
-  args_info->decode_dir_max = 2;
   args_info->PSNR_help = gengetopt_args_info_help[7] ;
+  args_info->PSNR_min = 2;
+  args_info->PSNR_max = 2;
   args_info->parallel_encode_help = gengetopt_args_info_help[8] ;
   args_info->dict_help = gengetopt_args_info_help[9] ;
   args_info->threads_help = gengetopt_args_info_help[10] ;
@@ -253,9 +253,9 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->encode_orig));
   free_string_field (&(args_info->decode_arg));
   free_string_field (&(args_info->decode_orig));
-  free_multiple_string_field (args_info->decode_dir_given, &(args_info->decode_dir_arg), &(args_info->decode_dir_orig));
-  free_string_field (&(args_info->PSNR_arg));
-  free_string_field (&(args_info->PSNR_orig));
+  free_string_field (&(args_info->decode_dir_arg));
+  free_string_field (&(args_info->decode_dir_orig));
+  free_multiple_string_field (args_info->PSNR_given, &(args_info->PSNR_arg), &(args_info->PSNR_orig));
   free_string_field (&(args_info->parallel_encode_arg));
   free_string_field (&(args_info->parallel_encode_orig));
   free_string_field (&(args_info->dict_arg));
@@ -309,9 +309,9 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "encode", args_info->encode_orig, 0);
   if (args_info->decode_given)
     write_into_file(outfile, "decode", args_info->decode_orig, 0);
-  write_multiple_into_file(outfile, args_info->decode_dir_given, "decode-dir", args_info->decode_dir_orig, 0);
-  if (args_info->PSNR_given)
-    write_into_file(outfile, "PSNR", args_info->PSNR_orig, 0);
+  if (args_info->decode_dir_given)
+    write_into_file(outfile, "decode-dir", args_info->decode_dir_orig, 0);
+  write_multiple_into_file(outfile, args_info->PSNR_given, "PSNR", args_info->PSNR_orig, 0);
   if (args_info->parallel_encode_given)
     write_into_file(outfile, "parallel-encode", args_info->parallel_encode_orig, 0);
   if (args_info->dict_given)
@@ -513,11 +513,11 @@ reset_group_group1(struct gengetopt_args_info *args_info)
   args_info->decode_given = 0 ;
   free_string_field (&(args_info->decode_arg));
   free_string_field (&(args_info->decode_orig));
-  args_info->decode_dir_given = 0 ; args_info->decode_dir_group = 0 ;
-  free_multiple_string_field (args_info->decode_dir_given, &(args_info->decode_dir_arg), &(args_info->decode_dir_orig));
-  args_info->PSNR_given = 0 ;
-  free_string_field (&(args_info->PSNR_arg));
-  free_string_field (&(args_info->PSNR_orig));
+  args_info->decode_dir_given = 0 ;
+  free_string_field (&(args_info->decode_dir_arg));
+  free_string_field (&(args_info->decode_dir_orig));
+  args_info->PSNR_given = 0 ; args_info->PSNR_group = 0 ;
+  free_multiple_string_field (args_info->PSNR_given, &(args_info->PSNR_arg), &(args_info->PSNR_orig));
   args_info->parallel_encode_given = 0 ;
   free_string_field (&(args_info->parallel_encode_arg));
   free_string_field (&(args_info->parallel_encode_orig));
@@ -594,7 +594,7 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
   FIX_UNUSED (additional_error);
 
   /* checks for required options */
-  if (check_multiple_option_occurrences(prog_name, args_info->decode_dir_given, args_info->decode_dir_min, args_info->decode_dir_max, "'--decode-dir' ('-f')"))
+  if (check_multiple_option_occurrences(prog_name, args_info->PSNR_given, args_info->PSNR_min, args_info->PSNR_max, "'--PSNR' ('-P')"))
      error_occurred = 1;
   
   if (args_info->group1_group_counter == 0)
@@ -885,7 +885,7 @@ cmdline_parser_internal (
 {
   int c;	/* Character of the parsed option.  */
 
-  struct generic_list * decode_dir_list = NULL;
+  struct generic_list * PSNR_list = NULL;
   int error_occurred = 0;
   struct gengetopt_args_info local_args_info;
   
@@ -992,31 +992,31 @@ cmdline_parser_internal (
           break;
         case 'f':	/* decodes all image files in the given directory.  */
         
-          if (update_multiple_arg_temp(&decode_dir_list, 
-              &(local_args_info.decode_dir_given), optarg, 0, 0, ARG_STRING,
-              "decode-dir", 'f',
-              additional_error))
-            goto failure;
-          if (!args_info->decode_dir_group)
-            {
-              args_info->decode_dir_group = 1;
-              args_info->group1_group_counter += 1;
-            }
-        
-          break;
-        case 'P':	/* calculates codec quality between original and decoded file.  */
-        
           if (args_info->group1_group_counter && override)
             reset_group_group1 (args_info);
           args_info->group1_group_counter += 1;
         
-          if (update_arg( (void *)&(args_info->PSNR_arg), 
-               &(args_info->PSNR_orig), &(args_info->PSNR_given),
-              &(local_args_info.PSNR_given), optarg, 0, 0, ARG_STRING,
+          if (update_arg( (void *)&(args_info->decode_dir_arg), 
+               &(args_info->decode_dir_orig), &(args_info->decode_dir_given),
+              &(local_args_info.decode_dir_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
+              "decode-dir", 'f',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'P':	/* calculates codec quality between original and decoded file.  */
+        
+          if (update_multiple_arg_temp(&PSNR_list, 
+              &(local_args_info.PSNR_given), optarg, 0, 0, ARG_STRING,
               "PSNR", 'P',
               additional_error))
             goto failure;
+          if (!args_info->PSNR_group)
+            {
+              args_info->PSNR_group = 1;
+              args_info->group1_group_counter += 1;
+            }
         
           break;
         case 'p':	/* Encoding using threads.  */
@@ -1077,13 +1077,13 @@ cmdline_parser_internal (
     }
   
 
-  update_multiple_arg((void *)&(args_info->decode_dir_arg),
-    &(args_info->decode_dir_orig), args_info->decode_dir_given,
-    local_args_info.decode_dir_given, 0,
-    ARG_STRING, decode_dir_list);
+  update_multiple_arg((void *)&(args_info->PSNR_arg),
+    &(args_info->PSNR_orig), args_info->PSNR_given,
+    local_args_info.PSNR_given, 0,
+    ARG_STRING, PSNR_list);
 
-  args_info->decode_dir_given += local_args_info.decode_dir_given;
-  local_args_info.decode_dir_given = 0;
+  args_info->PSNR_given += local_args_info.PSNR_given;
+  local_args_info.PSNR_given = 0;
   
   if (check_required)
     {
@@ -1098,7 +1098,7 @@ cmdline_parser_internal (
   return 0;
 
 failure:
-  free_list (decode_dir_list, 1 );
+  free_list (PSNR_list, 1 );
   
   cmdline_parser_release (&local_args_info);
   return (EXIT_FAILURE);
