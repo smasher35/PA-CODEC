@@ -65,11 +65,8 @@ int main(int argc, char *argv[])
 
 
 
-
-
-
 	 /** -------------------  Entrega  -------------------------2 */
-	 /** --encode aargument fiven*/
+	 /** --encode argument given*/
 	 if(args_info.encode_given){
 
 	 	printf("\n[TO BE DONE] option not implemented yet!!!\n");
