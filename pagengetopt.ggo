@@ -17,10 +17,10 @@ groupoption "encode" e "encodes the file image" group="group1" typestr= "filenam
 groupoption "decode" d "decodes the file image" group="group1" typestr= "filename" string dependon="dict"
 
 
-groupoption "decode-dir" f "decodes all image files in the given directory" group="group1" typestr= "directory"  string dependon="dict"
+groupoption "dir-decode" f "decodes all image files in the given directory" group="group1" typestr= "directory"  string dependon="dict"
 
 
-groupoption "PSNR" P "calculates codec quality between original and decoded file" group="group1" typestr= "original,decoded files" multiple(2) string 
+groupoption "PSNR" P "calculates codec quality between original and decoded file" group="group1" typestr= "original,decoded files" string 
 
 
 groupoption "parallel-encode" p "Encoding using threads" group="group1" typestr= "filename" string dependon="threads" 
@@ -35,7 +35,7 @@ groupoption "parallel-encode" p "Encoding using threads" group="group1" typestr=
 
 #Opçoes independentes
 option "dict" D "supllies the dictonary for the encoding/decoding"  typestr= "filename" string optional	
-option "threads" t "Number of threads used to encode the image" typestr= "n threads" int optional dependon="dict"
+option "max-threads" t "Number of threads used to encode the image" typestr= "n threads" int optional 
 
 
 #---------------------------------------- End Other Options ----------------------------------------------------
