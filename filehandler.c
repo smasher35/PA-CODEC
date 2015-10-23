@@ -48,12 +48,12 @@ void read_file(char *filename){
 	
 	if (pgm_file == NULL)
 	{
-		ERROR(2, "Can't open file %s", filename);			
+		ERROR(1, "Can't open file %s", filename);			
 	}
 
 	fgets(version, sizeof(version), pgm_file);
 	if (!strcmp(version, "P5") && !strcmp(version, "P2")) {
-        ERROR(3, "Wrong File Type %s", version);
+        ERROR(2, "Wrong File Type %s", version);
     }
     else {
     	strcpy(pgm_struct.filename, filename);
@@ -89,14 +89,14 @@ pixel_t **allocate_matrix(int cols, int lines)
 
 	matrix = (pixel_t **)MALLOC(lines * sizeof(pixel_t*));
 	if (matrix == NULL){
-		ERROR(10,"CAN'T ALLOCATE MATRIX (lines)");
+		ERROR(11,"CAN'T ALLOCATE MATRIX (lines)");
 	}
 
 	for (i = 0; i < lines; ++i)
 	{
 		matrix[i] = (pixel_t *)MALLOC(cols * sizeof(pixel_t));
 		if (matrix[i] == NULL) {
-			ERROR(11,"CAN'T ALLOCATE MATRIX (COLUMNS)");
+			ERROR(12,"CAN'T ALLOCATE MATRIX (COLUMNS)");
 		}
 		
 		DEBUG("TAMANHO DA LINHA %d: %d", i, sizeof(matrix[i]) * sizeof(pixel_t));
