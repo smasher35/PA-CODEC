@@ -35,7 +35,7 @@ groupoption "parallel-encode" p "Encoding using threads" group="group1" typestr=
 
 #Opçoes independentes
 option "dict" D "supllies the dictonary for the encoding/decoding"  typestr= "filename" string optional	
-option "max-threads" t "Number of threads used to encode the image" typestr= "n threads" int optional 
+option "threads" t "Number of threads used to encode the image" typestr= "n threads" int optional 
 
 
 #---------------------------------------- End Other Options ----------------------------------------------------

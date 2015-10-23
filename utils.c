@@ -7,20 +7,13 @@
  */
 
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 #include "utils.h"
+#include "memory.h"
+#include "debug.h"
 
-/**Struct to store info about the matrix */
-typedef short pixel_t;
-typedef struct pgm
-{
-	int pgm_type; 	/**< 2 (p2-ASCII) or 5 (p5-raw) */
-	int columns; 	/**< width of image */
-	int lines; 		/**< height of image */
-	int max_value;	/**< max value of pixels */
-	char filename[256]; 	/**< name of the file */
 
-	pixel_t **matrix_ptr;
-}pgm_t;
 
 
 
@@ -36,26 +29,4 @@ void about(void){
 	printf("=========================================================\n");
 }
 
-void read_file(char *filename){
-	FILE *file;
-	file = fopen(filename, "r");
-	pgm_t pgm = NULL;
-	char pgm_type[3];
 
-
-	if (file == NULL)
-	{
-		ERROR(2, "Can't open file %s", filename);			
-	}
-	else
-	{
-		fgets(pgm_type, sizeof(pgm_type), filename);
-		printf("%s\n", pgm_type);
-	}
-
-	fclose (file);
-	
-
-
-
-}

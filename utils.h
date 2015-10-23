@@ -11,6 +11,5 @@
 
 
 	void about(void);
-	void read_file(char *filename);
 
  #endif

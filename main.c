@@ -26,6 +26,7 @@
 #include "memory.h"
 #include "utils.h"
 #include "pagengetopt.h"
+#include "filehandler.h"
 
 int main(int argc, char *argv[])
 {
@@ -63,7 +64,7 @@ int main(int argc, char *argv[])
 	 	about();
 	 }
 	 if (args_info.decode_given){
-	 	read_file(args_info.decode_arg[0]);
+	 	read_file(args_info.decode_arg);
 	 }
 
 
