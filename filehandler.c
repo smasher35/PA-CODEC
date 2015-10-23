@@ -25,7 +25,7 @@ typedef struct pgm
 
 
 
-void skip_comments(FILE *fp)
+void skip_comments_and_spaces(FILE *fp)
 {
     int ch;
     char line[100];
@@ -34,7 +34,7 @@ void skip_comments(FILE *fp)
         ;
     if (ch == '#') {
         fgets(line, sizeof(line), fp);
-        skip_comments(fp);
+        skip_comments_and_spaces(fp);
     } else
         fseek(fp, -1, SEEK_CUR);
 }
@@ -59,13 +59,13 @@ void read_file(char *filename){
     	strcpy(pgm_struct.filename, filename);
     	pgm_struct.pgm_type = atoi(version+1);
 
-    	skip_comments(pgm_file);
+    	skip_comments_and_spaces(pgm_file);
     	fscanf(pgm_file, "%d", &pgm_struct.columns);    	
 
-    	skip_comments(pgm_file);
+    	skip_comments_and_spaces(pgm_file);
     	fscanf(pgm_file, "%d", &pgm_struct.lines);
 
-    	skip_comments(pgm_file);
+    	skip_comments_and_spaces(pgm_file);
     	fscanf(pgm_file, "%d", &pgm_struct.max_gray_value);
 
 
@@ -76,7 +76,9 @@ void read_file(char *filename){
 
     	pgm_struct.matrix_ptr = allocate_matrix(pgm_struct.columns, pgm_struct.lines);
 
-    	dealloc_matrix(pgm_struct.matrix_ptr, pgm_struct.columns);
+    	load_matrix_to_struct(pgm_struct.matrix_ptr, pgm_struct.lines, pgm_struct.columns, pgm_file);
+
+    	//dealloc_matrix(pgm_struct.matrix_ptr, pgm_struct.columns);
     }    
 
 	fclose (pgm_file);
@@ -99,7 +101,7 @@ pixel_t **allocate_matrix(int cols, int lines)
 			ERROR(12,"CAN'T ALLOCATE MATRIX (COLUMNS)");
 		}
 		
-		DEBUG("TAMANHO DA LINHA %d: %d", i, sizeof(matrix[i]) * sizeof(pixel_t));
+		//DEBUG("TAMANHO DA LINHA %d: %d", i, sizeof(matrix[i]) * sizeof(pixel_t));
 	}
 		
 	return matrix;
@@ -114,4 +116,21 @@ void dealloc_matrix(pixel_t **matrix, int lines)
         free(matrix[i]);
     }
     free(matrix);
+}
+
+void load_matrix_to_struct(pixel_t **matrix, int lines, int cols, FILE *fp)
+{
+	int i;
+    int n;
+    for (i = 0; i < lines; i++)
+    {
+    	for (n = 0; n < cols; n++)
+    	{
+			skip_comments_and_spaces(fp);
+			fscanf(fp, "%hd", &matrix[i][n]);
+			printf("%hd", matrix[i][n]);
+			//DEBUG("VALOR DA MATRIZ NA POSICAO %d,%d: %hd", i, n, pgm_struct.matrix_ptr[i][n]);
+		}
+		printf("\n");
+	}
 }
