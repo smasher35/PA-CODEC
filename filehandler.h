@@ -24,5 +24,5 @@ void dealloc_matrix(pixel_t **matrix, int lines);
 pixel_t **allocate_matrix_p2(int cols, int lines);
 void load_matrix_to_struct_p2(pixel_t **matrix, int lines, int cols, FILE *file);
 
-pixel_t **allocate_matrix_p5(int cols, int lines);
+pixel_t **allocate_matrix_p5(int cols, int lines, int max_gray_value);
 #endif

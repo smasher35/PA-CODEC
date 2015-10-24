@@ -44,7 +44,7 @@ void read_file(char *filename){
 	}
 	else if (pgm_struct.pgm_type == 5)
 	{
-		pgm_struct.matrix_ptr = allocate_matrix_p5(pgm_struct.columns, pgm_struct.lines);
+		pgm_struct.matrix_ptr = allocate_matrix_p5(pgm_struct.columns, pgm_struct.lines, pgm_struct.max_gray_value);
 	}  	
 
     	//dealloc_matrix(pgm_struct.matrix_ptr, pgm_struct.columns);
@@ -73,9 +73,19 @@ pixel_t **allocate_matrix_p2(int cols, int lines)
 		
 	return matrix;
 }
-pixel_t **allocate_matrix_p5(int cols, int lines)
+pixel_t **allocate_matrix_p5(int cols, int lines, int max_gray_value)
 {
-	DEBUG("LOAD BINARY FILE: NOT IMPLEMENTED YET");
+	pixel_t **matrix = NULL;
+	int i;
+	if (max_gray_value<255) 
+	{
+		//TODO: allocate 1 byte per pixel
+	}
+	else if (max_gray_value<65535)
+	{
+		//TODO: allocate 2 bytes per pixel
+	}
+
 		
 	//return matrix;
 	return NULL;
