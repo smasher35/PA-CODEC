@@ -9,34 +9,18 @@
 #include "filehandler.h"
 
 
-
-
-/**Struct to store info about the matrix */
-typedef struct pgm
-{
-	int pgm_type; 	/**< 2 (p2-ASCII) or 5 (p5-raw) */
-	int columns; 	/**< width of image */
-	int lines; 		/**< height of image */
-	int max_gray_value;	/**< max value of pixels */
-	char filename[256]; 	/**< name of the file */
-
-	pixel_t **matrix_ptr;
-}pgm_t;
-
-
-
-void skip_comments_and_spaces(FILE *fp)
+void skip_comments_and_spaces(FILE *file)
 {
     int ch;
     char line[100];
  
-    while ((ch = fgetc(fp)) != EOF && isspace(ch))
+    while ((ch = fgetc(file)) != EOF && isspace(ch))
         ;
     if (ch == '#') {
-        fgets(line, sizeof(line), fp);
-        skip_comments_and_spaces(fp);
+        fgets(line, sizeof(line), file);
+        skip_comments_and_spaces(file);
     } else
-        fseek(fp, -1, SEEK_CUR);
+        fseek(file, -1, SEEK_CUR);
 }
 
 
@@ -44,47 +28,32 @@ void read_file(char *filename){
 	FILE *pgm_file;
 	pgm_file = fopen(filename, "r");
 	pgm_t pgm_struct;
-	char version[3];
+	
 	
 	if (pgm_file == NULL)
 	{
 		ERROR(1, "Can't open file %s", filename);			
+	}	
+	
+	read_header(&pgm_struct, pgm_file, filename);
+
+	if (pgm_struct.pgm_type == 2)
+	{
+		pgm_struct.matrix_ptr = allocate_matrix_p2(pgm_struct.columns, pgm_struct.lines);
+    	load_matrix_to_struct_p2(pgm_struct.matrix_ptr, pgm_struct.lines, pgm_struct.columns, pgm_file);
 	}
-
-	fgets(version, sizeof(version), pgm_file);
-	if (!strcmp(version, "P5") && !strcmp(version, "P2")) {
-        ERROR(2, "Wrong File Type %s", version);
-    }
-    else {
-    	strcpy(pgm_struct.filename, filename);
-    	pgm_struct.pgm_type = atoi(version+1);
-
-    	skip_comments_and_spaces(pgm_file);
-    	fscanf(pgm_file, "%d", &pgm_struct.columns);    	
-
-    	skip_comments_and_spaces(pgm_file);
-    	fscanf(pgm_file, "%d", &pgm_struct.lines);
-
-    	skip_comments_and_spaces(pgm_file);
-    	fscanf(pgm_file, "%d", &pgm_struct.max_gray_value);
-
-
-
-    	DEBUG("COLUNAS: %d" , pgm_struct.columns);
-    	DEBUG("LINHAS: %d" , pgm_struct.lines);
-    	DEBUG("MAX GRAY VALUE: %d" , pgm_struct.max_gray_value);
-
-    	pgm_struct.matrix_ptr = allocate_matrix(pgm_struct.columns, pgm_struct.lines);
-
-    	load_matrix_to_struct(pgm_struct.matrix_ptr, pgm_struct.lines, pgm_struct.columns, pgm_file);
+	else if (pgm_struct.pgm_type == 5)
+	{
+		pgm_struct.matrix_ptr = allocate_matrix_p5(pgm_struct.columns, pgm_struct.lines);
+	}  	
 
     	//dealloc_matrix(pgm_struct.matrix_ptr, pgm_struct.columns);
-    }    
+               
 
 	fclose (pgm_file);
 }
 
-pixel_t **allocate_matrix(int cols, int lines)
+pixel_t **allocate_matrix_p2(int cols, int lines)
 {
 	pixel_t **matrix = NULL;
 	int i;
@@ -100,12 +69,18 @@ pixel_t **allocate_matrix(int cols, int lines)
 		if (matrix[i] == NULL) {
 			ERROR(12,"CAN'T ALLOCATE MATRIX (COLUMNS)");
 		}
-		
-		//DEBUG("TAMANHO DA LINHA %d: %d", i, sizeof(matrix[i]) * sizeof(pixel_t));
 	}
 		
 	return matrix;
 }
+pixel_t **allocate_matrix_p5(int cols, int lines)
+{
+	DEBUG("LOAD BINARY FILE: NOT IMPLEMENTED YET");
+		
+	//return matrix;
+	return NULL;
+}
+
 
 void dealloc_matrix(pixel_t **matrix, int lines)
 {
@@ -118,7 +93,7 @@ void dealloc_matrix(pixel_t **matrix, int lines)
     free(matrix);
 }
 
-void load_matrix_to_struct(pixel_t **matrix, int lines, int cols, FILE *fp)
+void load_matrix_to_struct_p2(pixel_t **matrix, int lines, int cols, FILE *file)
 {
 	int i;
     int n;
@@ -126,11 +101,43 @@ void load_matrix_to_struct(pixel_t **matrix, int lines, int cols, FILE *fp)
     {
     	for (n = 0; n < cols; n++)
     	{
-			skip_comments_and_spaces(fp);
-			fscanf(fp, "%hd", &matrix[i][n]);
+			skip_comments_and_spaces(file);
+			fscanf(file, "%hd", &matrix[i][n]);
 			printf("%hd", matrix[i][n]);
 			//DEBUG("VALOR DA MATRIZ NA POSICAO %d,%d: %hd", i, n, pgm_struct.matrix_ptr[i][n]);
 		}
 		printf("\n");
+	}
+}
+
+void read_header(pgm_t *pgm_struct, FILE *file, char *filename)
+{
+	char version[3];
+	fgets(version, sizeof(version), file);
+	DEBUG("Version: %s", version);
+
+	if (strcmp(version, "P2") == 0 || strcmp(version, "P5") == 0)
+	{
+		strcpy(pgm_struct->filename, filename);
+    	pgm_struct->pgm_type = atoi(version+1);
+
+    	skip_comments_and_spaces(file);
+    	fscanf(file, "%d", &pgm_struct->columns);    	
+
+    	skip_comments_and_spaces(file);
+    	fscanf(file, "%d", &pgm_struct->lines);
+
+    	skip_comments_and_spaces(file);
+    	fscanf(file, "%d", &pgm_struct->max_gray_value);
+
+
+
+    	DEBUG("COLUNAS: %d" , pgm_struct->columns);
+    	DEBUG("LINHAS: %d" , pgm_struct->lines);
+    	DEBUG("MAX GRAY VALUE: %d" , pgm_struct->max_gray_value);
+	}
+	else
+	{
+		ERROR(2, "Wrong File Type: %s", version);
 	}
 }
