@@ -430,9 +430,9 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
       fprintf (stderr, "%s: '--decode-dir' ('-f') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
       error_occurred = 1;
     }
-  if (args_info->parallel_encode_given && ! args_info->threads_given)
+  if (args_info->parallel_encode_given && ! args_info->dict_given)
     {
-      fprintf (stderr, "%s: '--parallel-encode' ('-p') option depends on option 'threads'%s\n", prog_name, (additional_error ? additional_error : ""));
+      fprintf (stderr, "%s: '--parallel-encode' ('-p') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
       error_occurred = 1;
     }
 

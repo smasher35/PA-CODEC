@@ -23,7 +23,7 @@ groupoption "decode-dir" f "decodes all image files in the given directory" grou
 groupoption "PSNR" P "calculates codec quality between original and decoded file" group="group1" typestr= "original,decoded files" string 
 
 
-groupoption "parallel-encode" p "Encoding using threads" group="group1" typestr= "filename" string dependon="threads" 
+groupoption "parallel-encode" p "Encoding using threads" group="group1" typestr= "filename" string dependon="dict" 
 
 #---------------------------------------- End Group 1 ----------------------------------------------------
 

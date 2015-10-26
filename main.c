@@ -78,6 +78,11 @@ int main(int argc, char *argv[])
 
 	 if(args_info.parallel_encode_given){
 
+	 	if(!args_info.threads_given) {
+	 		fprintf(stderr, "[ERROR]  Threads parameter is mandatory with --parallel-enconde\n");
+			exit(1);
+	 	}
+
 	 	printf("\n[TO BE DONE] option not implemented yet!!!\n");
 	 }
 
