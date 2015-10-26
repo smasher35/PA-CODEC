@@ -17,7 +17,7 @@ groupoption "encode" e "encodes the file image" group="group1" typestr= "filenam
 groupoption "decode" d "decodes the file image" group="group1" typestr= "filename" string dependon="dict"
 
 
-groupoption "dir-decode" f "decodes all image files in the given directory" group="group1" typestr= "directory"  string dependon="dict"
+groupoption "decode-dir" f "decodes all image files in the given directory" group="group1" typestr= "directory"  string dependon="dict"
 
 
 groupoption "PSNR" P "calculates codec quality between original and decoded file" group="group1" typestr= "original,decoded files" string 

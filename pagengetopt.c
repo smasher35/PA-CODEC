@@ -40,7 +40,7 @@ const char *gengetopt_args_info_help[] = {
   "  -a, --about                   About the Authores of this application",
   "  -e, --encode=filename         encodes the file image",
   "  -d, --decode=filename         decodes the file image",
-  "  -f, --dir-decode=directory    decodes all image files in the given directory",
+  "  -f, --decode-dir=directory    decodes all image files in the given directory",
   "  -P, --PSNR=original,decoded files\n                                calculates codec quality between original and\n                                  decoded file",
   "  -p, --parallel-encode=filename\n                                Encoding using threads",
   "  -D, --dict=filename           supllies the dictonary for the\n                                  encoding/decoding",
@@ -76,7 +76,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->about_given = 0 ;
   args_info->encode_given = 0 ;
   args_info->decode_given = 0 ;
-  args_info->dir_decode_given = 0 ;
+  args_info->decode_dir_given = 0 ;
   args_info->PSNR_given = 0 ;
   args_info->parallel_encode_given = 0 ;
   args_info->dict_given = 0 ;
@@ -92,8 +92,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->encode_orig = NULL;
   args_info->decode_arg = NULL;
   args_info->decode_orig = NULL;
-  args_info->dir_decode_arg = NULL;
-  args_info->dir_decode_orig = NULL;
+  args_info->decode_dir_arg = NULL;
+  args_info->decode_dir_orig = NULL;
   args_info->PSNR_arg = NULL;
   args_info->PSNR_orig = NULL;
   args_info->parallel_encode_arg = NULL;
@@ -114,7 +114,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->about_help = gengetopt_args_info_help[3] ;
   args_info->encode_help = gengetopt_args_info_help[4] ;
   args_info->decode_help = gengetopt_args_info_help[5] ;
-  args_info->dir_decode_help = gengetopt_args_info_help[6] ;
+  args_info->decode_dir_help = gengetopt_args_info_help[6] ;
   args_info->PSNR_help = gengetopt_args_info_help[7] ;
   args_info->parallel_encode_help = gengetopt_args_info_help[8] ;
   args_info->dict_help = gengetopt_args_info_help[9] ;
@@ -206,8 +206,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->encode_orig));
   free_string_field (&(args_info->decode_arg));
   free_string_field (&(args_info->decode_orig));
-  free_string_field (&(args_info->dir_decode_arg));
-  free_string_field (&(args_info->dir_decode_orig));
+  free_string_field (&(args_info->decode_dir_arg));
+  free_string_field (&(args_info->decode_dir_orig));
   free_string_field (&(args_info->PSNR_arg));
   free_string_field (&(args_info->PSNR_orig));
   free_string_field (&(args_info->parallel_encode_arg));
@@ -255,8 +255,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "encode", args_info->encode_orig, 0);
   if (args_info->decode_given)
     write_into_file(outfile, "decode", args_info->decode_orig, 0);
-  if (args_info->dir_decode_given)
-    write_into_file(outfile, "dir-decode", args_info->dir_decode_orig, 0);
+  if (args_info->decode_dir_given)
+    write_into_file(outfile, "decode-dir", args_info->decode_dir_orig, 0);
   if (args_info->PSNR_given)
     write_into_file(outfile, "PSNR", args_info->PSNR_orig, 0);
   if (args_info->parallel_encode_given)
@@ -325,9 +325,9 @@ reset_group_group1(struct gengetopt_args_info *args_info)
   args_info->decode_given = 0 ;
   free_string_field (&(args_info->decode_arg));
   free_string_field (&(args_info->decode_orig));
-  args_info->dir_decode_given = 0 ;
-  free_string_field (&(args_info->dir_decode_arg));
-  free_string_field (&(args_info->dir_decode_orig));
+  args_info->decode_dir_given = 0 ;
+  free_string_field (&(args_info->decode_dir_arg));
+  free_string_field (&(args_info->decode_dir_orig));
   args_info->PSNR_given = 0 ;
   free_string_field (&(args_info->PSNR_arg));
   free_string_field (&(args_info->PSNR_orig));
@@ -425,9 +425,9 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
       fprintf (stderr, "%s: '--decode' ('-d') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
       error_occurred = 1;
     }
-  if (args_info->dir_decode_given && ! args_info->dict_given)
+  if (args_info->decode_dir_given && ! args_info->dict_given)
     {
-      fprintf (stderr, "%s: '--dir-decode' ('-f') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
+      fprintf (stderr, "%s: '--decode-dir' ('-f') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
       error_occurred = 1;
     }
   if (args_info->parallel_encode_given && ! args_info->threads_given)
@@ -594,7 +594,7 @@ cmdline_parser_internal (
         { "about",	0, NULL, 'a' },
         { "encode",	1, NULL, 'e' },
         { "decode",	1, NULL, 'd' },
-        { "dir-decode",	1, NULL, 'f' },
+        { "decode-dir",	1, NULL, 'f' },
         { "PSNR",	1, NULL, 'P' },
         { "parallel-encode",	1, NULL, 'p' },
         { "dict",	1, NULL, 'D' },
@@ -669,11 +669,11 @@ cmdline_parser_internal (
             reset_group_group1 (args_info);
           args_info->group1_group_counter += 1;
         
-          if (update_arg( (void *)&(args_info->dir_decode_arg), 
-               &(args_info->dir_decode_orig), &(args_info->dir_decode_given),
-              &(local_args_info.dir_decode_given), optarg, 0, 0, ARG_STRING,
+          if (update_arg( (void *)&(args_info->decode_dir_arg), 
+               &(args_info->decode_dir_orig), &(args_info->decode_dir_given),
+              &(local_args_info.decode_dir_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "dir-decode", 'f',
+              "decode-dir", 'f',
               additional_error))
             goto failure;
         
