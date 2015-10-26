@@ -63,27 +63,35 @@ int main(int argc, char *argv[])
 	 if (args_info.about_given){
 	 	about();
 	 }
+
+
 	 if (args_info.decode_given){
 	 	read_file(args_info.decode_arg);
 	 }
 
 
 
-	 /** -------------------  Entrega  -------------------------2 */
+	 /** -------------------  Project  Delivery II  ------------------------- */
 	 /** --encode argument given*/
 	 if(args_info.encode_given){
 
 	 	printf("\n[TO BE DONE] option not implemented yet!!!\n");
 	 }
 
+	 /** --parallel-encode argument given*/
 	 if(args_info.parallel_encode_given){
-
+	 	/** --threads argument not given*/
 	 	if(!args_info.threads_given) {
-	 		fprintf(stderr, "[ERROR]  Threads parameter is mandatory with --parallel-enconde\n");
+	 		fprintf(stderr, "[ERROR]  --threads <nthreads> parameter is mandatory with --parallel-enconde\n");
 			exit(1);
+	 	}else {
+	 		if(args_info.threads_arg > 1) {
+	 			printf("\n[TO BE DONE] option not implemented yet!!!\n");
+	 		}else {
+	 			fprintf(stderr, "[ERROR]  The threads number must be more than 1\n");
+				exit(1);
+	 		}
 	 	}
-
-	 	printf("\n[TO BE DONE] option not implemented yet!!!\n");
 	 }
 
 
@@ -94,7 +102,6 @@ int main(int argc, char *argv[])
 
 	/** free the memory allocated by gengetop */
 	cmdline_parser_free (&args_info);
-
 
 	return 0;
 }
