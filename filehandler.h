@@ -16,13 +16,13 @@ typedef struct pgm
 }pgm_t;
 
 
-void read_file(char *filename);
+pgm_t read_file(char *filename);
 void read_header(pgm_t *pgm_struct, FILE *file, char *filename);
 void skip_comments_and_spaces(FILE *file);
 void dealloc_matrix(pixel_t **matrix, int lines);
 
-pixel_t **allocate_matrix_p2(int cols, int lines);
+pixel_t **allocate_matrix(int cols, int lines);
 void load_matrix_to_struct_p2(pixel_t **matrix, int lines, int cols, FILE *file);
+void load_matrix_to_struct_p5(pixel_t **matrix, int lines, int cols, FILE *file, int max_gray_value);
 
-pixel_t **allocate_matrix_p5(int cols, int lines, int max_gray_value);
 #endif

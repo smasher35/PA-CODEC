@@ -6,7 +6,7 @@
 
 
 # Libraries to include (if any)
-LIBS=#-pthread 
+LIBS= -lm #-pthread
 
 # Compiler flags
 CFLAGS=-Wall -W -Wmissing-prototypes
@@ -45,7 +45,7 @@ debug.o: debug.c debug.h
 filehandler.o: filehandler.c utils.h memory.h debug.h filehandler.h
 memory.o: memory.c memory.h
 pagengetopt.o: pagengetopt.c pagengetopt.h
-utils.o: utils.c utils.h memory.h debug.h
+utils.o: utils.c utils.h memory.h debug.h filehandler.h
 
 
 #how to create an object file (.o) from C file (.c)

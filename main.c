@@ -31,6 +31,7 @@
 int main(int argc, char *argv[])
 {
 	struct gengetopt_args_info args_info;
+	pgm_t pgm_struct;
 
 	int parser_ret;
 	parser_ret = cmdline_parser(argc,argv, &args_info);
@@ -66,7 +67,28 @@ int main(int argc, char *argv[])
 
 
 	 if (args_info.decode_given){
-	 	read_file(args_info.decode_arg);
+	 	pgm_struct = read_file(args_info.decode_arg);
+	 }
+
+	 if(args_info.PSNR_given){
+
+
+	 	    char *token;
+	 		char delim[2] = ",";
+	 		char *filename_1;
+	 		char *filename_2;
+
+
+	 		token = strtok (args_info.PSNR_arg,delim); //point to 1 filename (before delimiter)
+	 		filename_1 = token;
+	 		token = strtok (NULL, delim); //point to 2 filename (after delimiter)
+	 		filename_2 = token;
+
+
+	 		DEBUG("%s", filename_1);
+	 		DEBUG("%s", filename_2);
+
+	 		calculatePSNR (filename_1, filename_2);
 	 }
 
 

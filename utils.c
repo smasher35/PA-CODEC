@@ -14,12 +14,7 @@
 #include "utils.h"
 #include "memory.h"
 #include "debug.h"
-
-
-
-
-
-
+#include "filehandler.h"
 
  
 /** This function proveides information about the programmers of this application */
@@ -37,43 +32,95 @@ void about(void){
 
 /** Peak Signal-to-Noise Ratio (PSNR) */
 
-void calculatePSN (File *originalFile, FILE *decodedFile, struct timeval start_time, struct timeval end_time){
+void calculatePSNR (FILE *originalFile, FILE *decodedFile){
 
 	/** Under implementation */
 
-	char[] psnrOutput = "";
-	cgar[] error="";
+	char psnrOutput[] = "";
+	char error[] = "";
 	int result=0;
-	long meanDeviation= 0;
-	time executionTime;
+	double MSE = 0;
+	int maxIntensity =0;
+	long executionTime =0;
 	long long func_start_time, func_end_time;
-	long psnr =0;
+	double psnr = 0;
+	pgm_t fileOriginal_struct;
+	pgm_t fileDecoded_struct;
+	int totLines = 0;
+	int totCols = 0;
+	int status;
+	double maxF;
+
+	fileOriginal_struct = read_file(originalFile);
+	fileDecoded_struct = read_file(decodedFile);
 
 
-	 /* determine running time */
-    func_start_time = start_time.tv_sec * 1000 + start_time.tv_usec / 1000;
-    func_end_time = end_time.tv_sec * 1000 + end_time.tv_usec / 1000;
-    executionTime = func_end_time - func_start_time;
 
 
-	meanDeviation = (1/lines*cols);
+
+
+	//Acesssing formula data of the file given on his structure @ filahandler.h
+	maxIntensity = fileOriginal_struct.max_gray_value;
+	totLines = fileOriginal_struct.lines;
+	totCols = fileOriginal_struct.columns;
+	DEBUG("%d", maxIntensity);
+	DEBUG("%d", totLines);
+	DEBUG("%d", totCols);
+
+
 	
 
+	 /** determine running time */
+   // func_start_time = start_time.tv_sec * 1000 + start_time.tv_usec / 1000;
+   // func_end_time = end_time.tv_sec * 1000 + end_time.tv_usec / 1000;
+   // executionTime = func_end_time - func_start_time;
 
-	psnr = 20*log10(maxIntensity / meanDeviation);
+
+//MSE = (1/(m*n))*sum(sum((f-g).^2))
+	long f = calc_sum_matrix(fileOriginal_struct);
+	long g = calc_sum_matrix(fileDecoded_struct);
+	DEBUG("SUM ORIGINAL %ld", f);
+	DEBUG("SUM DECODED %ld", g);
+
+    /** Stil lacking the second part of the formula MEAN DEVIATION */
+	//MSE = (1 / ((double)totLines * (double)totCols) * sum(sum()));
+	/** PSNR FINAL VALUE */
+	//maxF=( (double)maxIntensity / (double)MSE);
+	//psnr = 20*log10(maxF / sqrt(MSE));
+
+	//DEBUG("PSNR temp: %e", psnr);
 
 
 	/** Output the PSNR calculation */
-	if(result==0){
-		char[] status = "OK";
+	/*if(result==0){
+		status = 0;
 	}else {
-		char[] status = "FAILURE";
-	}
+		status = -1;
+	}*/
 
-	psnrOutput =("PSNR:" + status + ":" + *originalFile + ":" + *decodedFile + psnr + "\n"+"Excution Time: " + executionTime + "\n");
-	if (result == 1){
+
+
+	//psnrOutput =("PSNR:" + status[0] + ":" + *originalFile + ":" + *decodedFile + psnr + "\n"+"Excution Time: " + executionTime + "\n");
+	/*if (result == 1){
 		psnrOutput=("FAILURE: " + error + "\n");
+	}*/
+
+}
+
+long calc_sum_matrix(pgm_t pgm_struct)
+{
+	int i;
+	int j;
+	long sum = 0;
+
+	for (i = 0; i < pgm_struct.lines; i++)
+	{
+		for (j = 0; j < pgm_struct.columns; j++)
+		{
+			sum += pgm_struct.matrix_ptr[i][j];
+		}
 	}
+	return sum;
 
 }
 
