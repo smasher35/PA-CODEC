@@ -2,6 +2,7 @@
 
 2						Can't open pgm file
 3						Wrong pgm file type (P2 P5)
+6						Can't open dic file
 
 ########################################################
 
@@ -9,3 +10,5 @@
 
 11						Can't allocate matrix(num lines)
 12						Can't allocate matrix(num cols) 
+13						Can't load binary file into matrix
+14

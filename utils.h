@@ -12,7 +12,9 @@
  	#include "filehandler.h"
 
 	void about(void);
-	void calculatePSN (FILE *originalFile, FILE *decodedFile);
+	void calculatePSNR (char *originalFile, char *decodedFile);
 	long calc_sum_matrix(pgm_t pgm_struct);
+	void process_signal(int signum);
+	int install_signal_handler(void);
 
  #endif

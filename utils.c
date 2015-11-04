@@ -11,6 +11,9 @@
 #include <ctype.h>
 #include <math.h>
 #include <time.h> 
+#include <signal.h>
+#include <libgen.h>
+
 #include "utils.h"
 #include "memory.h"
 #include "debug.h"
@@ -32,31 +35,36 @@ void about(void){
 
 /** Peak Signal-to-Noise Ratio (PSNR) */
 
-void calculatePSNR (FILE *originalFile, FILE *decodedFile){
+void calculatePSNR (char *originalFile, char *decodedFile){
 
 	/** Under implementation */
 
-	char psnrOutput[] = "";
-	char error[] = "";
-	int result=0;
+	char status[10] = "";
 	double MSE = 0;
-	int maxIntensity =0;
-	long executionTime =0;
-	long long func_start_time, func_end_time;
+	int maxIntensity=0;
+	double MAXf =0;
 	double psnr = 0;
 	pgm_t fileOriginal_struct;
 	pgm_t fileDecoded_struct;
 	int totLines = 0;
 	int totCols = 0;
-	int status;
-	double maxF;
+	clock_t begin, end;
+	double time_spent;
+
+	char *basec, *basec2, *bname, *bname2;
+	char *path = originalFile;
+	char *path2 = decodedFile;
+
+	begin = clock();
+	/* time-consuming job */
+	basec = strdup(path);
+	bname = basename(basec);
+
+	basec2 = strdup(path2);
+	bname2 = basename(basec2);
 
 	fileOriginal_struct = read_file(originalFile);
 	fileDecoded_struct = read_file(decodedFile);
-
-
-
-
 
 
 	//Acesssing formula data of the file given on his structure @ filahandler.h
@@ -68,7 +76,6 @@ void calculatePSNR (FILE *originalFile, FILE *decodedFile){
 	DEBUG("%d", totCols);
 
 
-	
 
 	 /** determine running time */
    // func_start_time = start_time.tv_sec * 1000 + start_time.tv_usec / 1000;
@@ -76,36 +83,62 @@ void calculatePSNR (FILE *originalFile, FILE *decodedFile){
    // executionTime = func_end_time - func_start_time;
 
 
-//MSE = (1/(m*n))*sum(sum((f-g).^2))
+
 	long f = calc_sum_matrix(fileOriginal_struct);
 	long g = calc_sum_matrix(fileDecoded_struct);
+
+	
 	DEBUG("SUM ORIGINAL %ld", f);
 	DEBUG("SUM DECODED %ld", g);
+	
+	//MSE = (1/(m*n))*sum(sum((f-g).^2))
+	double mn = (double)totLines * (double)totCols;
 
-    /** Stil lacking the second part of the formula MEAN DEVIATION */
-	//MSE = (1 / ((double)totLines * (double)totCols) * sum(sum()));
+	if (mn == 0) {
+		strcpy(status,"FAILURE");
+		printf ("\n\nPSNR: %s:%s:%s\nExcution Time: %f secs\n", status, bname, bname2, time_spent);
+		printf("FAILURE: ");
+		ERROR(30,"INVALID TOTAL COLUMNS OR TOTAL LINES\n");
+	}
+	
+	/** MEDIAN DEVIATION CALCULATION */
+	MSE = (1/(mn)) * (((f-g)^2));
+
+	if (MSE <= 0) {
+		strcpy(status,"FAILURE");
+		printf ("\n\nPSNR: %s:%s:%s\nExcution Time: %f secs\n", status, bname, bname2, time_spent);
+		printf("FAILURE: ");
+		ERROR(31,"INVALID MSE - MEDIAN DEVIATION\n");
+	}
+
+
+	
+	MAXf=( (double)maxIntensity);
+	if (MAXf <= 0) {
+		strcpy(status,"FAILURE");
+		printf ("\n\nPSNR: %s %s %s \nExcution Time: %f secs\n", status, bname, bname2, time_spent);
+		printf("FAILURE: ");
+		ERROR(32,"INVALID MAX INTENSITY\n");
+	}
+	else {
+			strcpy(status,"OK");
+	}
+
+
 	/** PSNR FINAL VALUE */
-	//maxF=( (double)maxIntensity / (double)MSE);
-	//psnr = 20*log10(maxF / sqrt(MSE));
+	psnr = 20*log10(MAXf / sqrt(MSE));
 
-	//DEBUG("PSNR temp: %e", psnr);
+	DEBUG("PSNR temp: %f", psnr);
 
-
-	/** Output the PSNR calculation */
-	/*if(result==0){
-		status = 0;
-	}else {
-		status = -1;
-	}*/
-
-
-
-	//psnrOutput =("PSNR:" + status[0] + ":" + *originalFile + ":" + *decodedFile + psnr + "\n"+"Excution Time: " + executionTime + "\n");
-	/*if (result == 1){
-		psnrOutput=("FAILURE: " + error + "\n");
-	}*/
-
+	
+	end = clock();
+	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+	printf ("\n\nPSNR: %s:%s:%s:%.5f \nExcution Time: %.3f s\n", status, bname, bname2, psnr, time_spent);
 }
+
+
+
+
 
 long calc_sum_matrix(pgm_t pgm_struct)
 {
@@ -121,8 +154,30 @@ long calc_sum_matrix(pgm_t pgm_struct)
 		}
 	}
 	return sum;
-
 }
 
+int install_signal_handler(void){
+	struct sigaction act;
+	int exit_code = 1;
+	act.sa_handler = process_signal;
+	sigemptyset(&act.sa_mask);
+
+	act.sa_flags = 0;/*fidedigno*/
+	act.sa_flags |= SA_RESTART; /*recupera chamadas bloqueantes*/
+
+	if (sigaction(SIGINT, &act, NULL))
+	{
+		ERROR(exit_code, "Can't install signal handler (sigaction)");
+	}
+	DEBUG("install_signal_handler done!");
+
+	return 0;
+} 
+
+void process_signal(int signum){
+	fprintf(stderr, "[SIGINT=%d] Operation interrupt by: @user", signum);
+	DEBUG("FIXME: free all resources");
+	exit(0);
+}
 
 

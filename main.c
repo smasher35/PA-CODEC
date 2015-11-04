@@ -30,8 +30,12 @@
 
 int main(int argc, char *argv[])
 {
+
+	install_signal_handler();
+
 	struct gengetopt_args_info args_info;
-	pgm_t pgm_struct;
+	cod_t cod_struct;
+	dict_t dict_sruct;
 
 	int parser_ret;
 	parser_ret = cmdline_parser(argc,argv, &args_info);
@@ -67,7 +71,8 @@ int main(int argc, char *argv[])
 
 
 	 if (args_info.decode_given){
-	 	pgm_struct = read_file(args_info.decode_arg);
+	 	cod_struct = read_cod_file(args_info.decode_arg);
+	 	//dict_sruct = read_dictionary (args_info.dict_arg);
 	 }
 
 	 if(args_info.PSNR_given){
@@ -75,20 +80,20 @@ int main(int argc, char *argv[])
 
 	 	    char *token;
 	 		char delim[2] = ",";
-	 		char *filename_1;
-	 		char *filename_2;
+	 		char *original_filename;
+	 		char *decoded_filename;
 
 
 	 		token = strtok (args_info.PSNR_arg,delim); //point to 1 filename (before delimiter)
-	 		filename_1 = token;
+	 		original_filename = token;
 	 		token = strtok (NULL, delim); //point to 2 filename (after delimiter)
-	 		filename_2 = token;
+	 		decoded_filename = token;
 
 
-	 		DEBUG("%s", filename_1);
-	 		DEBUG("%s", filename_2);
+	 		DEBUG("%s", original_filename);
+	 		DEBUG("%s", decoded_filename);
 
-	 		calculatePSNR (filename_1, filename_2);
+	 		calculatePSNR (original_filename, decoded_filename);
 	 }
 
 
