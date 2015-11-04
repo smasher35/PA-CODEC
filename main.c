@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
 	 if (args_info.decode_given){
 	 	cod_struct = read_cod_file(args_info.decode_arg);
-	 	//dict_sruct = read_dictionary (args_info.dict_arg);
+	 	dict_sruct = read_dictionary (args_info.dict_arg);
 	 }
 
 	 if(args_info.PSNR_given){

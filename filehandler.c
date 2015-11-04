@@ -118,7 +118,7 @@ void read_cod_header(cod_t *cod_struct, FILE *file, char *filename)
 		ERROR(2, "Wrong File Type: %s", version);
 	}
 }
-/*
+
 dict_t read_dictionary (char *dictionary_fname)
 {
 	FILE *dict_file;
@@ -132,22 +132,25 @@ dict_t read_dictionary (char *dictionary_fname)
 	}
 
 	read_header_dict(&dict_struct, dict_file, dictionary_fname);
+	dict_struct.blocks_ptr = alocate_dict_blocks(dict_struct.width_block, dict_struct.height_block, dict_struct.num_blocks);
+	load_blocks_to_struct(dict_struct.blocks_ptr, dict_struct.height_block, dict_struct.width_block, dict_file, dict_struct.num_blocks);
 
 	fclose (dict_file);
 
 	return dict_struct;
 
 }
+
 void read_header_dict(dict_t *dict_struct, FILE *dict_file, char *filename)
 {
     	fscanf(dict_file, "%d", &dict_struct->num_blocks);
-    	fscanf(dict_file, "%d", &dict_struct->heigh_block);
+    	fscanf(dict_file, "%d", &dict_struct->height_block);
     	fscanf(dict_file, "%d", &dict_struct->width_block); 
 
     	DEBUG("QUANT BLOCOS: %d" , dict_struct->num_blocks);
     	DEBUG("LARGURA DO BLOCO: %d" , dict_struct->width_block);
-    	DEBUG("ALTURA DO BLOCO: %d" , dict_struct->heigh_block);
-}*/
+    	DEBUG("ALTURA DO BLOCO: %d" , dict_struct->height_block);
+}
 
 
 void load_cod_file_to_struct(int *cod_array, int array_size, FILE *file)
@@ -163,7 +166,40 @@ void load_cod_file_to_struct(int *cod_array, int array_size, FILE *file)
 	}
 }
 
+int **alocate_dict_blocks(int width_block, int height_block, int num_blocks)
+{
+	int **blocks = NULL;
+	int i;
 
+	blocks = (int **)MALLOC(num_blocks * sizeof(int*));
+	if (blocks == NULL){
+		ERROR(11,"CAN'T ALLOCATE BLOCKS (lines)");
+	}
+	for (i = 0; i < num_blocks; ++i)
+	{
+		blocks[i] = (int *)MALLOC((width_block*height_block) * sizeof(int));
+		if (blocks[i] == NULL) {
+			ERROR(12,"CAN'T ALLOCATE BLOCKS (COLUMNS)");
+		}
+	}
+	return blocks;
+}
+
+void load_blocks_to_struct(int **blocks_ptr, int height_block, int width_block, FILE *file, int num_blocks)
+{
+	int i;
+	int n;
+	for (i = 0; i < num_blocks; i++)
+	{
+		for (n = 0; n < height_block + width_block; n++)
+		{
+			skip_comments_and_spaces(file);
+			fscanf(file, "%d", &blocks_ptr[i][n]);
+			printf("%d ", blocks_ptr[i][n]);
+		}
+		printf("\n");
+	}
+}
 
 /*************************************************************************************************************/
 

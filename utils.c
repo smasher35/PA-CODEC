@@ -76,22 +76,13 @@ void calculatePSNR (char *originalFile, char *decodedFile){
 	DEBUG("%d", totCols);
 
 
-
-	 /** determine running time */
-   // func_start_time = start_time.tv_sec * 1000 + start_time.tv_usec / 1000;
-   // func_end_time = end_time.tv_sec * 1000 + end_time.tv_usec / 1000;
-   // executionTime = func_end_time - func_start_time;
-
-
-
 	long f = calc_sum_matrix(fileOriginal_struct);
 	long g = calc_sum_matrix(fileDecoded_struct);
 
 	
 	DEBUG("SUM ORIGINAL %ld", f);
 	DEBUG("SUM DECODED %ld", g);
-	
-	//MSE = (1/(m*n))*sum(sum((f-g).^2))
+
 	double mn = (double)totLines * (double)totCols;
 
 	if (mn == 0) {
@@ -124,21 +115,13 @@ void calculatePSNR (char *originalFile, char *decodedFile){
 			strcpy(status,"OK");
 	}
 
-
 	/** PSNR FINAL VALUE */
 	psnr = 20*log10(MAXf / sqrt(MSE));
-
-	DEBUG("PSNR temp: %f", psnr);
-
 	
 	end = clock();
 	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-	printf ("\n\nPSNR: %s:%s:%s:%.5f \nExcution Time: %.3f s\n", status, bname, bname2, psnr, time_spent);
+	printf ("\n\nPSNR: %s:%s:%s:%.5f \nExcution Time: %.5f s\n", status, bname, bname2, psnr, time_spent);
 }
-
-
-
-
 
 long calc_sum_matrix(pgm_t pgm_struct)
 {

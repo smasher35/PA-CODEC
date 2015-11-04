@@ -46,6 +46,9 @@ void skip_comments_and_spaces(FILE *file);
 int *allocate_cod_blocks_array(int cols, int lines, int dict_block_size);
 void dealloc_matrix(pixel_t **matrix, int lines);
 
+int **alocate_dict_blocks(int width_block, int height_block, int num_blocks);
+void load_blocks_to_struct(int **matrix_ptr, int height_block, int width_block, FILE *file, int num_blocks);
+
 void load_cod_file_to_struct(int *cod_array, int array_size, FILE *file);
 
 dict_t read_dictionary (char *dictionary_fname);
