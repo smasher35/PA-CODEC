@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <assert.h>
+#include <time.h> 
 
 #include "debug.h"
 #include "memory.h"
@@ -30,7 +31,10 @@
 
 int main(int argc, char *argv[])
 {
-
+	double time_spent;
+	clock_t begin, end;
+	begin = clock();
+	
 	install_signal_handler();
 
 	struct gengetopt_args_info args_info;
@@ -121,14 +125,12 @@ int main(int argc, char *argv[])
 	 	}
 	 }
 
-
-
-
-
-	 
-
 	/** free the memory allocated by gengetop */
 	cmdline_parser_free (&args_info);
+
+	end = clock();
+	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+	printf ("Excution Time: %.3f s\n", time_spent);
 
 	return 0;
 }

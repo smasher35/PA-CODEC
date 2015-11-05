@@ -10,7 +10,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include <time.h> 
 #include <signal.h>
 #include <libgen.h>
 
@@ -43,19 +42,19 @@ void calculatePSNR (char *originalFile, char *decodedFile){
 	double MSE = 0;
 	int maxIntensity=0;
 	double MAXf =0;
-	double psnr = 0;
+	double PSNR_value = 0;
 	pgm_t fileOriginal_struct;
 	pgm_t fileDecoded_struct;
 	int totLines = 0;
 	int totCols = 0;
-	clock_t begin, end;
-	double time_spent;
+
+
 
 	char *basec, *basec2, *bname, *bname2;
 	char *path = originalFile;
 	char *path2 = decodedFile;
 
-	begin = clock();
+
 	/* time-consuming job */
 	basec = strdup(path);
 	bname = basename(basec);
@@ -76,38 +75,36 @@ void calculatePSNR (char *originalFile, char *decodedFile){
 	DEBUG("%d", totCols);
 
 
-	long f = calc_sum_matrix(fileOriginal_struct);
-	long g = calc_sum_matrix(fileDecoded_struct);
+	int i;
+	int j;
+	double sum = 0.0;
+	double diff = 0.0;
 
-	
-	DEBUG("SUM ORIGINAL %ld", f);
-	DEBUG("SUM DECODED %ld", g);
-
-	double mn = (double)totLines * (double)totCols;
-
-	if (mn == 0) {
-		strcpy(status,"FAILURE");
-		printf ("\n\nPSNR: %s:%s:%s\nExcution Time: %f secs\n", status, bname, bname2, time_spent);
-		printf("FAILURE: ");
-		ERROR(30,"INVALID TOTAL COLUMNS OR TOTAL LINES\n");
+	for (i = 0; i < totLines; i++)
+	{
+		for (j = 0; j < totCols; j++)
+		{
+			diff = 1.0*(fileOriginal_struct.matrix_ptr[i][j] - fileDecoded_struct.matrix_ptr[i][j]);
+			diff = diff * diff;
+			sum += diff;
+		}
 	}
-	
-	/** MEDIAN DEVIATION CALCULATION */
-	MSE = (1/(mn)) * (((f-g)^2));
+	MSE = sum / (totLines * totCols);
+	double MSE_sqrt = sqrt(MSE);
+	double arg_log10 = (1.0*maxIntensity) / MSE_sqrt;
+	PSNR_value = 20 * log10(arg_log10);
 
 	if (MSE <= 0) {
 		strcpy(status,"FAILURE");
-		printf ("\n\nPSNR: %s:%s:%s\nExcution Time: %f secs\n", status, bname, bname2, time_spent);
+		printf ("\n\nPSNR: %s:%s:%s\n", status, bname, bname2);
 		printf("FAILURE: ");
 		ERROR(31,"INVALID MSE - MEDIAN DEVIATION\n");
 	}
 
-
-	
 	MAXf=( (double)maxIntensity);
 	if (MAXf <= 0) {
 		strcpy(status,"FAILURE");
-		printf ("\n\nPSNR: %s %s %s \nExcution Time: %f secs\n", status, bname, bname2, time_spent);
+		printf ("\n\nPSNR: %s %s %s", status, bname, bname2);
 		printf("FAILURE: ");
 		ERROR(32,"INVALID MAX INTENSITY\n");
 	}
@@ -116,27 +113,8 @@ void calculatePSNR (char *originalFile, char *decodedFile){
 	}
 
 	/** PSNR FINAL VALUE */
-	psnr = 20*log10(MAXf / sqrt(MSE));
 	
-	end = clock();
-	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-	printf ("\n\nPSNR: %s:%s:%s:%.5f \nExcution Time: %.5f s\n", status, bname, bname2, psnr, time_spent);
-}
-
-long calc_sum_matrix(pgm_t pgm_struct)
-{
-	int i;
-	int j;
-	long sum = 0;
-
-	for (i = 0; i < pgm_struct.lines; i++)
-	{
-		for (j = 0; j < pgm_struct.columns; j++)
-		{
-			sum += pgm_struct.matrix_ptr[i][j];
-		}
-	}
-	return sum;
+	printf ("\n\nPSNR: %s:%s:%s: %.3f\n", status, bname, bname2, PSNR_value);
 }
 
 int install_signal_handler(void){
@@ -160,6 +138,7 @@ int install_signal_handler(void){
 void process_signal(int signum){
 	fprintf(stderr, "[SIGINT=%d] Operation interrupt by: @user", signum);
 	DEBUG("FIXME: free all resources");
+	fcloseall();
 	exit(0);
 }
 
