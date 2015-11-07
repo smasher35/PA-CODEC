@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
 	struct gengetopt_args_info args_info;
 	cod_t cod_struct;
-	dict_t dict_sruct;
+	dict_t dict_struct;
 
 	int parser_ret;
 	parser_ret = cmdline_parser(argc,argv, &args_info);
@@ -76,7 +76,8 @@ int main(int argc, char *argv[])
 
 	 if (args_info.decode_given){
 	 	cod_struct = read_cod_file(args_info.decode_arg);
-	 	dict_sruct = read_dictionary (args_info.dict_arg);
+	 	dict_struct = read_dictionary (args_info.dict_arg);
+	 	decode_pgm(cod_struct, dict_struct);
 	 }
 
 	 if(args_info.PSNR_given){

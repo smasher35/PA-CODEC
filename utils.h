@@ -16,5 +16,6 @@
 	long calc_sum_matrix(pgm_t pgm_struct);
 	void process_signal(int signum);
 	int install_signal_handler(void);
+	void decode_pgm(cod_t cod_Struct, dict_t dict_Struct);
 
  #endif

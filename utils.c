@@ -142,4 +142,66 @@ void process_signal(int signum){
 	exit(0);
 }
 
+void decode_pgm(cod_t cod_struct, dict_t dict_struct)
+{
+	pgm_t decoded_struct;
+
+	decoded_struct.pgm_type = cod_struct.cod_type;
+	decoded_struct.lines = cod_struct.lines;
+	decoded_struct.columns = cod_struct.columns;
+
+	//TODO: preencher o max grayscale, tem de se calcular a partir do max(valores no dicionario)
+
+	int img_size = cod_struct.lines * cod_struct.columns;
+	int block_size = cod_struct.block_width * cod_struct.block_height;
+	int len_of_coded_file = img_size / block_size;
+	//DEBUG("LEN OF CODED FILE: %d", len_of_coded_file);
+
+	int index, j, k, l, m, n;
+	int block_start_height;
+	int block_start_width;
+	int blocks_line_size = cod_struct.columns/cod_struct.block_width;
+	int dict_index = 0;
+	int	index_of_dict_block_elem;
+
+	int x;
+
+	DEBUG("VALOR DO INDICE 2:0 %d",dict_struct.blocks_ptr[2][0]);
+	DEBUG("VALOR DO INDICE 2:1 %d",dict_struct.blocks_ptr[2][1]);
+	DEBUG("VALOR DO INDICE 2:2 %d",dict_struct.blocks_ptr[2][2]);
+	DEBUG("VALOR DO INDICE 2:3 %d",dict_struct.blocks_ptr[2][3]);
+
+	DEBUG("VALOR DO INDICE 0:0 %d",dict_struct.blocks_ptr[0][0]);
+	DEBUG("VALOR DO INDICE 0:1 %d",dict_struct.blocks_ptr[0][1]);
+	DEBUG("VALOR DO INDICE 0:2 %d",dict_struct.blocks_ptr[0][2]);
+	DEBUG("VALOR DO INDICE 0:3 %d",dict_struct.blocks_ptr[0][3]);
+	for (index = 0; index < len_of_coded_file; index++) //para cada elemento do array do ficheiro codificado
+	{
+		block_start_height = ( index / blocks_line_size) * cod_struct.block_height;
+		block_start_width = index * cod_struct.block_width;
+		dict_index = cod_struct.blocks_array[index];
+
+		for (j=0 ; j < cod_struct.block_height; j++)
+		{	
+			for (k=0; k < cod_struct.block_width; k++)
+			{				
+				index_of_dict_block_elem = j+k+j;
+				decoded_struct.matrix_ptr[block_start_height + j][block_start_width + k] = dict_struct.blocks_ptr[dict_index][index_of_dict_block_elem];
+			}
+		}
+	}
+
+
+DEBUG("Decoded Matrix:");
+int i;
+	for (i = 0; i < decoded_struct.lines; i++)
+	{
+		for (j = 0; j < decoded_struct.columns; j++)
+		{
+			printf("%d ", decoded_struct.matrix_ptr[i][j]);
+		}
+		printf("\n");
+	}
+	
+}
 

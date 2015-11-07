@@ -79,7 +79,7 @@ void read_cod_header(cod_t *cod_struct, FILE *file, char *filename)
 {
 	char version[3];
 	fgets(version, sizeof(version), file);
-	DEBUG("Version: %s", version);
+	//DEBUG("Version: %s", version);
 	char *fname_aux = NULL;
 
 	if (strcmp(version, "Z2") == 0 || strcmp(version, "Z5") == 0)
@@ -106,12 +106,12 @@ void read_cod_header(cod_t *cod_struct, FILE *file, char *filename)
     	strcpy(cod_struct->filename, basename(filename));
     	
     	
-    	DEBUG("FILENAME: %s" , cod_struct->filename);
+    	/*DEBUG("FILENAME: %s" , cod_struct->filename);
     	DEBUG("COLUNAS: %d" , cod_struct->columns);
     	DEBUG("LINHAS: %d" , cod_struct->lines);
     	DEBUG("MAX DICT BLOCK INDEX: %d" , cod_struct->max_pattern_index);
     	DEBUG("DICT BLOCK WIDTH: %d" , cod_struct->block_width);
-    	DEBUG("DICT BLOCK HEIGHT: %d" , cod_struct->block_height);
+    	DEBUG("DICT BLOCK HEIGHT: %d" , cod_struct->block_height);*/
 	}
 	else
 	{
@@ -147,22 +147,22 @@ void read_header_dict(dict_t *dict_struct, FILE *dict_file, char *filename)
     	fscanf(dict_file, "%d", &dict_struct->height_block);
     	fscanf(dict_file, "%d", &dict_struct->width_block); 
 
-    	DEBUG("QUANT BLOCOS: %d" , dict_struct->num_blocks);
+    	/*DEBUG("QUANT BLOCOS: %d" , dict_struct->num_blocks);
     	DEBUG("LARGURA DO BLOCO: %d" , dict_struct->width_block);
-    	DEBUG("ALTURA DO BLOCO: %d" , dict_struct->height_block);
+    	DEBUG("ALTURA DO BLOCO: %d" , dict_struct->height_block);*/
 }
 
 
 void load_cod_file_to_struct(int *cod_array, int array_size, FILE *file)
 {
 	int i;
-	DEBUG("ARRAY SIZE: %d", array_size);
+	//DEBUG("ARRAY SIZE: %d", array_size);
 	for (i=0 ; i<array_size ; i++)
 	{
 		skip_comments_and_spaces(file);
 		fscanf(file, "%d", &cod_array[i]);
 
-		printf("%d\n", cod_array[i]);
+		//printf("%d\n", cod_array[i]);
 	}
 }
 
@@ -182,6 +182,7 @@ int **alocate_dict_blocks(int width_block, int height_block, int num_blocks)
 			ERROR(12,"CAN'T ALLOCATE BLOCKS (COLUMNS)");
 		}
 	}
+	DEBUG ("ALLOCATED %d BLOCKS FOR DICT", num_blocks);
 	return blocks;
 }
 
@@ -195,9 +196,10 @@ void load_blocks_to_struct(int **blocks_ptr, int height_block, int width_block, 
 		{
 			skip_comments_and_spaces(file);
 			fscanf(file, "%d", &blocks_ptr[i][n]);
-			printf("%d ", blocks_ptr[i][n]);
+			//printf("%d ", blocks_ptr[i][n]);
 		}
-		printf("\n");
+		//printf("\n");
+		
 	}
 }
 
@@ -324,7 +326,7 @@ void read_header(pgm_t *pgm_struct, FILE *file, char *filename)
 {
 	char version[3];
 	fgets(version, sizeof(version), file);
-	DEBUG("Version: %s", version);
+	//DEBUG("Version: %s", version);
 
 	if (strcmp(version, "P2") == 0 || strcmp(version, "P5") == 0)
 	{
@@ -342,9 +344,9 @@ void read_header(pgm_t *pgm_struct, FILE *file, char *filename)
 
 
 
-		DEBUG("COLUNAS: %d" , pgm_struct->columns);
-		DEBUG("LINHAS: %d" , pgm_struct->lines);
-		DEBUG("MAX GRAY VALUE: %d" , pgm_struct->max_gray_value);
+		//DEBUG("COLUNAS: %d" , pgm_struct->columns);
+		//DEBUG("LINHAS: %d" , pgm_struct->lines);
+		//DEBUG("MAX GRAY VALUE: %d" , pgm_struct->max_gray_value);
 	}
 	else
 	{
