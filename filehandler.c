@@ -10,7 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
- #include <libgen.h>
+#include <libgen.h>
+#include <limits.h>
 
 
 #include "utils.h"
@@ -18,7 +19,12 @@
 #include "debug.h"
 #include "filehandler.h"
 
-
+/**
+ * This function allows skip comments and spaces
+ *
+ * @param file file to be comments and spaces skipped
+ * @return void
+ */
 void skip_comments_and_spaces(FILE *file)
 {
     int ch;
@@ -33,7 +39,12 @@ void skip_comments_and_spaces(FILE *file)
         fseek(file, -1, SEEK_CUR);
 }
 
-
+/**
+ * This function allows read .cod file
+ *
+ * @param filename name of the file to be processed
+ * @return cod_struct
+ */
 cod_t read_cod_file(char *filename){
 	FILE *file;
 	file = fopen(filename, "r");
@@ -62,19 +73,23 @@ cod_t read_cod_file(char *filename){
 	{
 		if (cod_struct.cod_type == 5)
 		{
-			//load_matrix_to_struct_p5(pgm_struct.matrix_ptr, pgm_struct.lines, pgm_struct.columns, pgm_file, pgm_struct.max_gray_value);
+			ERROR(1,"FEATURE NOT IMPLEMENTED FOR P5 FILES");
 		}
-	}  	
-
-    	//dealloc_matrix(pgm_struct.matrix_ptr, pgm_struct.columns);
-               
+	}  	               
 
 	fclose (file);
 
 	return cod_struct;
 }
 
-
+/**
+ * This function allows read .cod file header
+ *
+ * @param cod_struct structure with the data file 
+ * @param file file to be processed
+ * @param filename name of the file to be processed
+ * @return void
+ */
 void read_cod_header(cod_t *cod_struct, FILE *file, char *filename)
 {
 	char version[3];
@@ -102,23 +117,19 @@ void read_cod_header(cod_t *cod_struct, FILE *file, char *filename)
     	skip_comments_and_spaces(file);
     	fscanf(file, "%d", &cod_struct->block_height);
 
-    	
     	strcpy(cod_struct->filename, basename(filename));
-    	
-    	
-    	/*DEBUG("FILENAME: %s" , cod_struct->filename);
-    	DEBUG("COLUNAS: %d" , cod_struct->columns);
-    	DEBUG("LINHAS: %d" , cod_struct->lines);
-    	DEBUG("MAX DICT BLOCK INDEX: %d" , cod_struct->max_pattern_index);
-    	DEBUG("DICT BLOCK WIDTH: %d" , cod_struct->block_width);
-    	DEBUG("DICT BLOCK HEIGHT: %d" , cod_struct->block_height);*/
 	}
 	else
 	{
 		ERROR(2, "Wrong File Type: %s", version);
 	}
 }
-
+/**
+ * This function allows read dictionary file 
+ *
+ * @param dictionary_fname name of the dictionary file
+ * @return dict_struct
+ */
 dict_t read_dictionary (char *dictionary_fname)
 {
 	FILE *dict_file;
@@ -140,44 +151,62 @@ dict_t read_dictionary (char *dictionary_fname)
 	return dict_struct;
 
 }
-
+/**
+ * This function allows read dictionary file header 
+ *
+ * @param dict_struct structure with the dictionary data
+ * @param dict_file dictionary file to be processed
+ * @param filename dictionary filename
+ * @return void
+ */
 void read_header_dict(dict_t *dict_struct, FILE *dict_file, char *filename)
 {
     	fscanf(dict_file, "%d", &dict_struct->num_blocks);
     	fscanf(dict_file, "%d", &dict_struct->height_block);
     	fscanf(dict_file, "%d", &dict_struct->width_block); 
 
-    	/*DEBUG("QUANT BLOCOS: %d" , dict_struct->num_blocks);
-    	DEBUG("LARGURA DO BLOCO: %d" , dict_struct->width_block);
-    	DEBUG("ALTURA DO BLOCO: %d" , dict_struct->height_block);*/
 }
 
-
-void load_cod_file_to_struct(int *cod_array, int array_size, FILE *file)
+/**
+ * This function allows load cod file to structure 
+ *
+ * @param cod_array array to store dict blocks 
+ * @param array_size size of dict array
+ * @param file file to be processed
+ * @return void
+ */
+void load_cod_file_to_struct(short *cod_array, int array_size, FILE *file)
 {
 	int i;
-	//DEBUG("ARRAY SIZE: %d", array_size);
 	for (i=0 ; i<array_size ; i++)
 	{
 		skip_comments_and_spaces(file);
 		fscanf(file, "%d", &cod_array[i]);
 
-		//printf("%d\n", cod_array[i]);
 	}
 }
 
-int **alocate_dict_blocks(int width_block, int height_block, int num_blocks)
+/**
+ * This function allows allocate memory for blocks matrix
+ *
+ * @param width_block width of the block
+ * @param height_block height of the block
+ * @param num_blocks number of blocks
+ * @return blocks
+ */
+pixel_t **alocate_dict_blocks(int width_block, int height_block, int num_blocks)
 {
 	int **blocks = NULL;
 	int i;
 
-	blocks = (int **)MALLOC(num_blocks * sizeof(int*));
+	DEBUG("NUM BLOCKS TO ALLOCATE: %d", num_blocks);
+	blocks = (pixel_t **)MALLOC(num_blocks * sizeof(pixel_t*));
 	if (blocks == NULL){
 		ERROR(11,"CAN'T ALLOCATE BLOCKS (lines)");
 	}
 	for (i = 0; i < num_blocks; ++i)
 	{
-		blocks[i] = (int *)MALLOC((width_block*height_block) * sizeof(int));
+		blocks[i] = (pixel_t *)MALLOC((width_block*height_block) * sizeof(pixel_t));
 		if (blocks[i] == NULL) {
 			ERROR(12,"CAN'T ALLOCATE BLOCKS (COLUMNS)");
 		}
@@ -185,8 +214,17 @@ int **alocate_dict_blocks(int width_block, int height_block, int num_blocks)
 	DEBUG ("ALLOCATED %d BLOCKS FOR DICT", num_blocks);
 	return blocks;
 }
-
-void load_blocks_to_struct(int **blocks_ptr, int height_block, int width_block, FILE *file, int num_blocks)
+/**
+ * This function allows to load dictionary file to structure 
+ *
+ * @param blocks_ptr pointer to matrix blocks
+ * @param height_block height of blocks
+ * @param width_block width of blocks
+ * @param file file to be processed
+ * @param num_blocks number of blocks
+ * @return void
+ */
+void load_blocks_to_struct(pixel_t **blocks_ptr, int height_block, int width_block, FILE *file, int num_blocks)
 {
 	int i;
 	int n;
@@ -195,23 +233,36 @@ void load_blocks_to_struct(int **blocks_ptr, int height_block, int width_block, 
 		for (n = 0; n < height_block + width_block; n++)
 		{
 			skip_comments_and_spaces(file);
-			fscanf(file, "%d", &blocks_ptr[i][n]);
-			//printf("%d ", blocks_ptr[i][n]);
+			fscanf(file, "%hd", &blocks_ptr[i][n]);
 		}
-		//printf("\n");
 		
 	}
 }
+/**
+ * This function allows to deallocate dict blocks matrix  
+ *
+ * @param blocks_ptr pointer to matrix blocks
+ * @param lines number of matrix lines
+ * @return void
+ */
+void dealloc_dict_blocks(pixel_t **blocks_ptr, int lines)
+{
+	int i;
+
+	for (i = 0; i < lines; ++i)
+	{
+		free(blocks_ptr[i]);
+	}
+	free(blocks_ptr);
+}
 
 /*************************************************************************************************************/
-
-
-
-
-
-
-
-
+/**
+ * This function allows read .pgm file
+ *
+ * @param filename name of the file to be processed
+ * @return pgm_struct
+ */
 pgm_t read_file(char *filename){
 	FILE *pgm_file;
 	pgm_file = fopen(filename, "r");
@@ -242,7 +293,13 @@ pgm_t read_file(char *filename){
 
 	return pgm_struct;
 }
-
+/**
+ * This function allows allocate memory for pgm matrix
+ *
+ * @param cols number of matrix columns
+ * @param lines number of matrix lines
+ * @return matrix
+ */
 pixel_t **allocate_matrix(int cols, int lines)
 {
 	pixel_t **matrix = NULL;
@@ -263,9 +320,13 @@ pixel_t **allocate_matrix(int cols, int lines)
 
 	return matrix;
 }
-
-
-
+/**
+ * This function allows to deallocate pgm matrix  
+ *
+ * @param matrix pgm matrix
+ * @param lines number of matrix lines
+ * @return void
+ */
 void dealloc_matrix(pixel_t **matrix, int lines)
 {
 	int i;
@@ -276,7 +337,15 @@ void dealloc_matrix(pixel_t **matrix, int lines)
 	}
 	free(matrix);
 }
-
+/**
+ * This function allows to load pgm P2 (ASCII) file to structure 
+ *
+ * @param matrix pgm matrix
+ * @param lines number of matrix lines
+ * @param cols number of matrix columns
+ * @param file file to be processed
+ * @return void
+ */
 void load_matrix_to_struct_p2(pixel_t **matrix, int lines, int cols, FILE *file)
 {
 	int i;
@@ -290,7 +359,16 @@ void load_matrix_to_struct_p2(pixel_t **matrix, int lines, int cols, FILE *file)
 		}
 	}
 }
-
+/**
+ * This function allows to load pgm P5 (binary) file to structure 
+ *
+ * @param matrix pgm matrix
+ * @param lines number of matrix lines
+ * @param cols number of matrix columns
+ * @param file file to be processed
+ * @param max_gray_value maximum gray intensity
+ * @return void
+ */
 void load_matrix_to_struct_p5(pixel_t **matrix, int lines, int cols, FILE *file, int max_gray_value){
 	int i;
 	int n;
@@ -321,12 +399,18 @@ void load_matrix_to_struct_p5(pixel_t **matrix, int lines, int cols, FILE *file,
 	}
 
 }
-
+/**
+ * This function allows read pgm file header 
+ *
+ * @param pgm_struct structure with the pgm file data
+ * @param file pgm file to be processed
+ * @param filename pgm filename
+ * @return void
+ */
 void read_header(pgm_t *pgm_struct, FILE *file, char *filename)
 {
 	char version[3];
 	fgets(version, sizeof(version), file);
-	//DEBUG("Version: %s", version);
 
 	if (strcmp(version, "P2") == 0 || strcmp(version, "P5") == 0)
 	{
@@ -352,4 +436,58 @@ void read_header(pgm_t *pgm_struct, FILE *file, char *filename)
 	{
 		ERROR(2, "Wrong File Type: %s", version);
 	}
+}
+/**
+ * This function allows to write pgm data structure into file
+ *
+ * @param pgm_struct structure with the pgm file data
+ * @param filename pgm filename to be written
+ * @return void
+ */
+
+void write_pgm_file(pgm_t pgm_struct, const char *filename)
+{
+	
+	char *bname = filename;
+	char *token;
+	char *path_aux = get_current_dir_name();
+	char *path;
+
+	DEBUG("BNAME: %s" , bname);
+
+	
+	if(validate_extension(bname, ".cod") == 1)
+	{
+		token = strtok(bname, ".");
+		bname = token;
+		path = bname;
+		strcat(path, ".pgm");
+	}
+
+	FILE *file;
+
+	file = fopen(path, "w");
+	if (file == NULL)
+	{
+		ERROR(1, "Can't open file %s", path);			
+	}
+	
+	fprintf(file, "P%d\n", pgm_struct.pgm_type);
+	fprintf(file, "%d %d\n", pgm_struct.columns, pgm_struct.lines);
+	fprintf(file, "%d\n", pgm_struct.max_gray_value);
+
+	int i, j;
+	for (i=0; i<pgm_struct.lines; i++)
+	{
+		for (j = 0; j < pgm_struct.columns; j++)
+		{
+			fprintf(file, "%d ", pgm_struct.matrix_ptr[i][j]);
+		}
+		fprintf(file, "\n");
+	}
+
+
+
+	fclose(file);
+
 }

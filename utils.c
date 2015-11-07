@@ -5,6 +5,7 @@
  * @date Novembro - 2015
  * @version 1 
  */
+ #define _GNU_SOURCE
 
 #include <stdio.h>
 #include <string.h>
@@ -12,6 +13,10 @@
 #include <math.h>
 #include <signal.h>
 #include <libgen.h>
+#include <dirent.h>
+#include <errno.h>
+#include <limits.h>
+#include <stdlib.h>
 
 #include "utils.h"
 #include "memory.h"
@@ -19,7 +24,11 @@
 #include "filehandler.h"
 
  
-/** This function proveides information about the programmers of this application */
+/**
+ * This function display information about the program paCodec
+ *
+ * @return Void
+ */
 void about(void){
 	printf("==================== paCodec Authors ====================\n");
 	printf("* Paulo Penicheiro - 2130628                            *\n");
@@ -29,14 +38,15 @@ void about(void){
 	printf("* 2015 - 2016                                           *\n");
 	printf("=========================================================\n");
 }
-
-
-
-/** Peak Signal-to-Noise Ratio (PSNR) */
-
+/**
+ * This function calculate Peak Signal-to-Noise Ratio (PSNR)
+ *
+ * @param originalFile Name of the original file to be processed
+ * @param decodedFile Name of the decoded file to be processed
+ * @return Void
+ */
 void calculatePSNR (char *originalFile, char *decodedFile){
 
-	/** Under implementation */
 
 	char status[10] = "";
 	double MSE = 0;
@@ -116,7 +126,11 @@ void calculatePSNR (char *originalFile, char *decodedFile){
 	
 	printf ("\n\nPSNR: %s:%s:%s: %.3f\n", status, bname, bname2, PSNR_value);
 }
-
+/**
+ * This function allows to install a signal handler
+ *
+ * @return 0 on success
+ */
 int install_signal_handler(void){
 	struct sigaction act;
 	int exit_code = 1;
@@ -130,19 +144,31 @@ int install_signal_handler(void){
 	{
 		ERROR(exit_code, "Can't install signal handler (sigaction)");
 	}
-	DEBUG("install_signal_handler done!");
-
 	return 0;
 } 
 
+/**
+ * This function allows to process the signal sent to program
+ *
+ * @param signum signal number to be processed
+ * @return void
+ */
 void process_signal(int signum){
 	fprintf(stderr, "[SIGINT=%d] Operation interrupt by: @user", signum);
 	DEBUG("FIXME: free all resources");
 	fcloseall();
 	exit(0);
 }
-
-void decode_pgm(cod_t cod_struct, dict_t dict_struct)
+/**
+ * This function allows decode the given .cod file
+ *
+ * @param cod_struct structure with the coded file data
+ * @param dict_struct structure with the dictionary file data
+ * @param cod_filename filename of codded file
+ * @param dict_filename filename of dictionary file
+ * @return void
+ */
+void decode_pgm(cod_t cod_struct, dict_t dict_struct, const char *cod_filename, const char *dict_filename)
 {
 	pgm_t decoded_struct;
 
@@ -150,13 +176,13 @@ void decode_pgm(cod_t cod_struct, dict_t dict_struct)
 	decoded_struct.lines = cod_struct.lines;
 	decoded_struct.columns = cod_struct.columns;
 
-	//TODO: preencher o max grayscale, tem de se calcular a partir do max(valores no dicionario)
+
+	decoded_struct.matrix_ptr = allocate_matrix(decoded_struct.columns, decoded_struct.lines);
 
 	int img_size = cod_struct.lines * cod_struct.columns;
 	int block_size = cod_struct.block_width * cod_struct.block_height;
 	int len_of_coded_file = img_size / block_size;
-	//DEBUG("LEN OF CODED FILE: %d", len_of_coded_file);
-
+	
 	int index, j, k, l, m, n;
 	int block_start_height;
 	int block_start_width;
@@ -165,20 +191,20 @@ void decode_pgm(cod_t cod_struct, dict_t dict_struct)
 	int	index_of_dict_block_elem;
 
 	int x;
+	decoded_struct.max_gray_value = 0;
 
-	DEBUG("VALOR DO INDICE 2:0 %d",dict_struct.blocks_ptr[2][0]);
-	DEBUG("VALOR DO INDICE 2:1 %d",dict_struct.blocks_ptr[2][1]);
-	DEBUG("VALOR DO INDICE 2:2 %d",dict_struct.blocks_ptr[2][2]);
-	DEBUG("VALOR DO INDICE 2:3 %d",dict_struct.blocks_ptr[2][3]);
-
-	DEBUG("VALOR DO INDICE 0:0 %d",dict_struct.blocks_ptr[0][0]);
-	DEBUG("VALOR DO INDICE 0:1 %d",dict_struct.blocks_ptr[0][1]);
-	DEBUG("VALOR DO INDICE 0:2 %d",dict_struct.blocks_ptr[0][2]);
-	DEBUG("VALOR DO INDICE 0:3 %d",dict_struct.blocks_ptr[0][3]);
-	for (index = 0; index < len_of_coded_file; index++) //para cada elemento do array do ficheiro codificado
+	for (index = 0; index < len_of_coded_file; index++) //for each array element
 	{
 		block_start_height = ( index / blocks_line_size) * cod_struct.block_height;
-		block_start_width = index * cod_struct.block_width;
+		if (index % blocks_line_size == 0)
+		{
+			block_start_width = 0;			
+		}
+		else
+		{
+			block_start_width = block_start_width + cod_struct.block_width;
+		}
+
 		dict_index = cod_struct.blocks_array[index];
 
 		for (j=0 ; j < cod_struct.block_height; j++)
@@ -187,21 +213,151 @@ void decode_pgm(cod_t cod_struct, dict_t dict_struct)
 			{				
 				index_of_dict_block_elem = j+k+j;
 				decoded_struct.matrix_ptr[block_start_height + j][block_start_width + k] = dict_struct.blocks_ptr[dict_index][index_of_dict_block_elem];
+				if (dict_struct.blocks_ptr[dict_index][index_of_dict_block_elem] > decoded_struct.max_gray_value)
+				{
+					decoded_struct.max_gray_value = dict_struct.blocks_ptr[dict_index][index_of_dict_block_elem];
+				}
 			}
 		}
 	}
 
-
-DEBUG("Decoded Matrix:");
-int i;
-	for (i = 0; i < decoded_struct.lines; i++)
-	{
-		for (j = 0; j < decoded_struct.columns; j++)
-		{
-			printf("%d ", decoded_struct.matrix_ptr[i][j]);
-		}
-		printf("\n");
-	}
+	write_pgm_file(decoded_struct, cod_filename);
 	
+	dealloc_dict_blocks(dict_struct.blocks_ptr, dict_struct.num_blocks);
+	dealloc_matrix(decoded_struct.matrix_ptr, decoded_struct.lines);
+
+}
+/**
+ * This function allows decode all the files in the given directory (recursivelly)
+ *
+ * @param dirname name of directory to decode
+ * @param dict_file filename of dictionary file
+ * @return 0 on success
+ */
+int decode_dir_recursive(const char *dirname, const char *dict_file)
+{
+	DIR *dir_p;
+	dir_p = opendir(dirname);
+	struct dirent my_entry;
+	struct dirent *result_ptr;
+	int ret_readdir;
+	int done = 0;
+
+	cod_t cod_struct;
+	dict_t dict_struct;
+
+	DEBUG("DIRNAME: %s", dirname);
+
+
+	if (dir_p == NULL){
+		fprintf(stderr, "Can't open dir %s:%s\n", dirname, strerror(errno));
+		return -1;
+	}	
+	do{
+		ret_readdir = readdir_r(dir_p, &my_entry, &result_ptr);
+		if (ret_readdir == -1){
+			fprintf(stderr, "error on readdir_r %s%s\n", dirname, strerror(errno));
+			return -1;
+		}
+		if (result_ptr == NULL){
+			//DEBUG("at end of dir %s", dirname);
+			done = 1;
+		}
+		else{
+			if (is_dot(my_entry.d_name) || is_dot_dot(my_entry.d_name)){
+				continue;
+			}
+			if (my_entry.d_type == DT_DIR)
+			{
+				char new_dirame[PATH_MAX];
+				sprintf(new_dirame, "%s/%s", dirname, my_entry.d_name);
+				decode_dir_recursive(new_dirame, dict_file);
+			}
+
+			else if(my_entry.d_type == DT_LNK){
+				//printf("SYM_LINK: %s\n", my_entry.d_name);
+				continue;
+			}else { //if diferent of DIR , SYM LINK, DOT and DOR_DOT (file)
+
+				char *f_extention;
+				char *token;
+				char delim[2] = ".";
+				char *cod_file;
+				char abs_path[PATH_MAX];
+
+			
+
+				if (validate_extension(my_entry.d_name, ".cod"))
+				{
+					
+					//DEBUG("ENCONTRADO .COD: %s/%s", dirname, my_entry.d_name);
+					char filename_aux[PATH_MAX];
+					strcpy(filename_aux, dirname);
+					//DEBUG("AFTER SRTG COPY: %s", filename_aux);
+					strcat(filename_aux, "/");
+					strcat(filename_aux, my_entry.d_name);
+					//DEBUG("AFTER SRTG CAT: %s", filename_aux);
+
+
+
+					if (dict_file != NULL)
+					{
+						//DEBUG("ENTROU NO IFFFFFF");
+						cod_struct = read_cod_file(filename_aux);
+						//DEBUG("PASSOU");
+						dict_struct = read_dictionary (dict_file);
+						decode_pgm(cod_struct, dict_struct, filename_aux, dict_file);
+					}
+				}
+
+			}
+			
+		}
+	}while(done == 0);
+	
+
+	closedir(dir_p);
+	return 0;
 }
 
+/**
+ * This function allows decide if the directory is "." (itself)
+ *
+ * @param dirname name of directory decide
+ * @return 0 on success
+ */
+int is_dot(const char *dirname){
+	return (strcmp(".", dirname) == 0);
+}
+
+/**
+ * This function allows decide if the directory is ".." (parent)
+ *
+ * @param dirname name of directory decide
+ * @return 0 on success
+ */
+int is_dot_dot(const char *dirname){
+	return (strcmp("..", dirname) == 0);
+}
+
+/**
+ * This function allows validate the extension of the given file
+ *
+ * @param file_name name of file to validate
+ * @param extension extension to validate
+ * @return 1 on success (filename equal to extension)
+ */
+int validate_extension(char* file_name, char* extention) {
+	char *ptr;
+
+	if(file_name == NULL || extention == NULL){
+		return 0;
+	}
+
+	ptr = strrchr(file_name, '.');
+	if(ptr == NULL){
+		return 0;
+	}
+
+	return (strcmp(ptr, extention) == 0);
+}

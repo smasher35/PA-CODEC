@@ -7,7 +7,7 @@ purpose "An utility validate all the arguments for the paCodec application"
 # Definição das opções 
 #---------------------------------------- Group 1 ----------------------------------------------------
 
-defgroup "group1" groupdesc="Mandatory Group" required
+defgroup "group1" groupdesc="Mandatory Group" #required
 groupoption "about" a "About the Authores of this application" group="group1" 
 
 #opcao encode necessita obbrigadtoriamente de passar um ficheiro por argumento assim como o ficheiro de diccionarios padrao
@@ -17,7 +17,7 @@ groupoption "encode" e "encodes the file image" group="group1" typestr= "filenam
 groupoption "decode" d "decodes the file image" group="group1" typestr= "filename" string dependon="dict"
 
 
-groupoption "decode-dir" f "decodes all image files in the given directory" group="group1" typestr= "directory"  string dependon="dict"
+groupoption "decode-dir" R "decodes all image files in the given directory" group="group1" typestr= "directory"  string dependon="dict"
 
 
 groupoption "PSNR" P "calculates codec quality between original and decoded file" group="group1" typestr= "original,decoded files" string 

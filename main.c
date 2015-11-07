@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	dict_t dict_struct;
 
 	int parser_ret;
-	parser_ret = cmdline_parser(argc,argv, &args_info);
+	parser_ret = cmdline_parser(argc, argv, &args_info);
 
 	/** parse the user given parameters with gengetopt */
 	if (parser_ret != 0) {
@@ -51,13 +51,11 @@ int main(int argc, char *argv[])
 
 	}
 
-
-	/** MAIN CODE */
-
 	/**Missing Arguments or incorrect arguments  ate least one argument must be provided*/
 	if (argc < 2) {
 	    printf("===================== HELP: Some Arguments Avaiable: =====================\n\n");
 		printf("--encode --> use this to encode an image file, don't forget to supply the file to encode\n");
+		printf("--parallel-encode --> use this to encode an image file with threads, don't forget to supply the file to encode and the number of threads\n");
 		printf("--decode --> use this to decode an image file, don't forget to supply the file to decode\n");
 		printf("--decode-dir --> use this to decode images in a given directory, suply the directory path\n");
 		printf("--PSNR --> use this to calculate .... between the original and decoded file, must supply both files as arguments\n");
@@ -73,13 +71,14 @@ int main(int argc, char *argv[])
 	 	about();
 	 }
 
-
+	 /** Decode the given file*/
 	 if (args_info.decode_given){
 	 	cod_struct = read_cod_file(args_info.decode_arg);
 	 	dict_struct = read_dictionary (args_info.dict_arg);
-	 	decode_pgm(cod_struct, dict_struct);
+	 	decode_pgm(cod_struct, dict_struct, args_info.decode_arg, args_info.dict_arg);
 	 }
 
+	 /** Calculate PSNR */
 	 if(args_info.PSNR_given){
 
 
@@ -126,9 +125,19 @@ int main(int argc, char *argv[])
 	 	}
 	 }
 
+	 if (args_info.decode_dir_given)
+	 {
+	 	printf("\nOption not full implemented yet!!!\n");
+	 }
+
+	 if (args_info.dict_given == 1)
+	 {
+	 	validate_extension(args_info.dict_arg, ".dic");
+	 }
+
+
 	/** free the memory allocated by gengetop */
 	cmdline_parser_free (&args_info);
-
 	end = clock();
 	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 	printf ("Excution Time: %.3f s\n", time_spent);

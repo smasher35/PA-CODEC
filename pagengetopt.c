@@ -40,7 +40,7 @@ const char *gengetopt_args_info_help[] = {
   "  -a, --about                   About the Authores of this application",
   "  -e, --encode=filename         encodes the file image",
   "  -d, --decode=filename         decodes the file image",
-  "  -f, --decode-dir=directory    decodes all image files in the given directory",
+  "  -R, --decode-dir=directory    decodes all image files in the given directory",
   "  -P, --PSNR=original,decoded files\n                                calculates codec quality between original and\n                                  decoded file",
   "  -p, --parallel-encode=filename\n                                Encoding using threads",
   "  -D, --dict=filename           supllies the dictonary for the\n                                  encoding/decoding",
@@ -407,13 +407,7 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
   FIX_UNUSED (additional_error);
 
   /* checks for required options */
-  if (args_info->group1_group_counter == 0)
-    {
-      fprintf (stderr, "%s: %d options of group group1 were given. One is required%s.\n", prog_name, args_info->group1_group_counter, (additional_error ? additional_error : ""));
-      error_occurred = 1;
-    }
   
-
   /* checks for dependences among options */
   if (args_info->encode_given && ! args_info->dict_given)
     {
@@ -427,7 +421,7 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
     }
   if (args_info->decode_dir_given && ! args_info->dict_given)
     {
-      fprintf (stderr, "%s: '--decode-dir' ('-f') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
+      fprintf (stderr, "%s: '--decode-dir' ('-R') option depends on option 'dict'%s\n", prog_name, (additional_error ? additional_error : ""));
       error_occurred = 1;
     }
   if (args_info->parallel_encode_given && ! args_info->dict_given)
@@ -594,7 +588,7 @@ cmdline_parser_internal (
         { "about",	0, NULL, 'a' },
         { "encode",	1, NULL, 'e' },
         { "decode",	1, NULL, 'd' },
-        { "decode-dir",	1, NULL, 'f' },
+        { "decode-dir",	1, NULL, 'R' },
         { "PSNR",	1, NULL, 'P' },
         { "parallel-encode",	1, NULL, 'p' },
         { "dict",	1, NULL, 'D' },
@@ -602,7 +596,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVae:d:f:P:p:D:t:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVae:d:R:P:p:D:t:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -663,7 +657,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'f':	/* decodes all image files in the given directory.  */
+        case 'R':	/* decodes all image files in the given directory.  */
         
           if (args_info->group1_group_counter && override)
             reset_group_group1 (args_info);
@@ -673,7 +667,7 @@ cmdline_parser_internal (
                &(args_info->decode_dir_orig), &(args_info->decode_dir_given),
               &(local_args_info.decode_dir_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "decode-dir", 'f',
+              "decode-dir", 'R',
               additional_error))
             goto failure;
         
@@ -746,7 +740,7 @@ cmdline_parser_internal (
 
   if (args_info->group1_group_counter > 1)
     {
-      fprintf (stderr, "%s: %d options of group group1 were given. One is required%s.\n", argv[0], args_info->group1_group_counter, (additional_error ? additional_error : ""));
+      fprintf (stderr, "%s: %d options of group group1 were given. At most one is required%s.\n", argv[0], args_info->group1_group_counter, (additional_error ? additional_error : ""));
       error_occurred = 1;
     }
   
