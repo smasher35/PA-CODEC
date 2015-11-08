@@ -450,7 +450,6 @@ void write_pgm_file(pgm_t pgm_struct, const char *filename)
 	
 	char *bname = filename;
 	char *token;
-	char *path_aux = get_current_dir_name();
 	char *path;
 
 	DEBUG("BNAME: %s" , bname);

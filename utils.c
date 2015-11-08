@@ -183,14 +183,13 @@ void decode_pgm(cod_t cod_struct, dict_t dict_struct, const char *cod_filename, 
 	int block_size = cod_struct.block_width * cod_struct.block_height;
 	int len_of_coded_file = img_size / block_size;
 	
-	int index, j, k, l, m, n;
+	int index, j, k;
 	int block_start_height;
 	int block_start_width;
 	int blocks_line_size = cod_struct.columns/cod_struct.block_width;
 	int dict_index = 0;
 	int	index_of_dict_block_elem;
 
-	int x;
 	decoded_struct.max_gray_value = 0;
 
 	for (index = 0; index < len_of_coded_file; index++) //for each array element
@@ -278,14 +277,6 @@ int decode_dir_recursive(const char *dirname, const char *dict_file)
 				//printf("SYM_LINK: %s\n", my_entry.d_name);
 				continue;
 			}else { //if diferent of DIR , SYM LINK, DOT and DOR_DOT (file)
-
-				char *f_extention;
-				char *token;
-				char delim[2] = ".";
-				char *cod_file;
-				char abs_path[PATH_MAX];
-
-			
 
 				if (validate_extension(my_entry.d_name, ".cod"))
 				{
