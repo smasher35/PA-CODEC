@@ -62,7 +62,7 @@ cod_t read_cod_file(char *filename){
 
 	dict_block_size = cod_struct.block_width*cod_struct.block_height;	
 	array_size = (cod_struct.columns * cod_struct.lines) / dict_block_size;
-	cod_struct.blocks_array = (int *)MALLOC(array_size*sizeof(int));
+	cod_struct.blocks_array = (short *)MALLOC(array_size*sizeof(short));
 
 
 	if (cod_struct.cod_type == 2)
@@ -196,7 +196,7 @@ void load_cod_file_to_struct(short *cod_array, int array_size, FILE *file)
  */
 pixel_t **alocate_dict_blocks(int width_block, int height_block, int num_blocks)
 {
-	int **blocks = NULL;
+	pixel_t **blocks = NULL;
 	int i;
 
 	DEBUG("NUM BLOCKS TO ALLOCATE: %d", num_blocks);

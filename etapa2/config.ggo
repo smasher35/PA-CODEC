@@ -1,0 +1,14 @@
+package "pacodec"
+version "1.0"
+
+defgroup "ops" groupdesc="an operation is required" optional
+
+groupoption "decode" - "Decodes a Z2/Z5 file" typestr=".cod file" string yes dependon="dict" group="ops"
+groupoption "decode-dir" - "Decodes recursivally all Z2/Z5 files in a folder" typestr="folder to process" string yes dependon="dict"  group="ops"
+groupoption "encode" - "Encodes a P2/P5 file" typestr=".pgm file" string yes dependon="dict" group="ops"
+groupoption "parallel-encode" - "Encodes a P2/P5 file using threads" typestr=".pgm file" string yes dependon="dict" group="ops"
+groupoption "PSNR" - "Computes the peak signal-to-noise ratio between two images" typestr="original file,decoded file" string yes group="ops" multiple(2)
+groupoption "about" a "Author info" optional group="ops"
+
+option "dict" - "Dictionary use to encode/decode files" typestr=".dic file" string no
+option "threads" - "Number of threads to use on the parallel version" int no dependon="parallel-encode"
