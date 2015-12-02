@@ -13,6 +13,15 @@ int install_signal_handler(void);
 
 
 
+/* -------------------------------------------- unfinished functions --------------------------------------- */
+void parallelEncode(void);
+void getnewTask(void);
+void quadError (void);
+void singleEncode(void);
+
+
+
+
 
 
 

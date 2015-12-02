@@ -22,7 +22,7 @@ PROGRAM=pacodec
 PROGRAM_OPT=config
 
 # Object files required to build the executable
-PROGRAM_OBJS=main.o debug.o memory.o ${PROGRAM_OPT}.o
+PROGRAM_OBJS=main.o debug.o memory.o utils.o ${PROGRAM_OPT}.o
 
 # Clean and all are not files
 .PHONY: clean all docs indent debugon
@@ -43,7 +43,7 @@ ${PROGRAM_OPT}.o: ${PROGRAM_OPT}.c ${PROGRAM_OPT}.h
 config.o: config.c config.h
 debug.o: debug.c debug.h
 memory.o: memory.c memory.h
-utils.o: utils.c
+utils.o: utils.c utils.h
 
 
 #how to create an object file (.o) from C file (.c)

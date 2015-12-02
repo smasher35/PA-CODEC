@@ -168,7 +168,7 @@ void process_signal(int signum){
  * @param dict_filename filename of dictionary file
  * @return void
  */
-void decode_pgm(cod_t cod_struct, dict_t dict_struct, const char *cod_filename, const char *dict_filename)
+void decode_pgm(cod_t cod_struct, dict_t dict_struct, const char *cod_filename)
 {
 	pgm_t decoded_struct;
 
@@ -297,7 +297,7 @@ int decode_dir_recursive(const char *dirname, const char *dict_file)
 						cod_struct = read_cod_file(filename_aux);
 						//DEBUG("PASSOU");
 						dict_struct = read_dictionary (dict_file);
-						decode_pgm(cod_struct, dict_struct, filename_aux, dict_file);
+						decode_pgm(cod_struct, dict_struct, filename_aux);
 					}
 				}
 

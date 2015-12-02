@@ -95,7 +95,7 @@ void read_cod_header(cod_t *cod_struct, FILE *file, char *filename)
 	char version[3];
 	fgets(version, sizeof(version), file);
 	//DEBUG("Version: %s", version);
-	char *fname_aux = NULL;
+	//char *fname_aux = NULL;
 
 	if (strcmp(version, "Z2") == 0 || strcmp(version, "Z5") == 0)
 	{
@@ -142,7 +142,7 @@ dict_t read_dictionary (char *dictionary_fname)
 		ERROR(1, "Can't open dictionary file %s", dictionary_fname);			
 	}
 
-	read_header_dict(&dict_struct, dict_file, dictionary_fname);
+	read_header_dict(&dict_struct, dict_file);
 	dict_struct.blocks_ptr = alocate_dict_blocks(dict_struct.width_block, dict_struct.height_block, dict_struct.num_blocks);
 	load_blocks_to_struct(dict_struct.blocks_ptr, dict_struct.height_block, dict_struct.width_block, dict_file, dict_struct.num_blocks);
 
@@ -159,7 +159,7 @@ dict_t read_dictionary (char *dictionary_fname)
  * @param filename dictionary filename
  * @return void
  */
-void read_header_dict(dict_t *dict_struct, FILE *dict_file, char *filename)
+void read_header_dict(dict_t *dict_struct, FILE *dict_file)
 {
     	fscanf(dict_file, "%d", &dict_struct->num_blocks);
     	fscanf(dict_file, "%d", &dict_struct->height_block);
@@ -181,7 +181,7 @@ void load_cod_file_to_struct(short *cod_array, int array_size, FILE *file)
 	for (i=0 ; i<array_size ; i++)
 	{
 		skip_comments_and_spaces(file);
-		fscanf(file, "%d", &cod_array[i]);
+		fscanf(file, "%hd", &cod_array[i]);
 
 	}
 }

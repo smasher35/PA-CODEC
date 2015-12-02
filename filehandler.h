@@ -84,7 +84,7 @@ dict_t read_dictionary (char *dictionary_fname);
  * @param filename dictionary filename
  * @return void
  */
-void read_header_dict(dict_t *dict_struct, FILE *dict_file, char *filename);
+void read_header_dict(dict_t *dict_struct, FILE *dict_file);
 /**
  * This function allows load cod file to structure 
  *

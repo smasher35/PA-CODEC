@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 	 if (args_info.decode_given){
 	 	cod_struct = read_cod_file(args_info.decode_arg);
 	 	dict_struct = read_dictionary (args_info.dict_arg);
-	 	decode_pgm(cod_struct, dict_struct, args_info.decode_arg, args_info.dict_arg);
+	 	decode_pgm(cod_struct, dict_struct, args_info.decode_arg);
 	 }
 
 	 /** Calculate PSNR */

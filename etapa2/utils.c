@@ -1,4 +1,6 @@
+#define _GNU_SOURCE
 
+#include "utils.h"
 
 int install_signal_handler(void){
 	struct sigaction act;
@@ -21,13 +23,23 @@ int install_signal_handler(void){
  *
  * @param signum signal number to be processed
  * @return void
- */
+ */ 
+
 void process_signal(int signum){
 	fprintf(stderr, "[SIGINT=%d] Operation interrupt by: @user", signum);
 	DEBUG("FIXME: free all resources");
 	fcloseall();
 	exit(0);
 }
+
+
+/**
+ * This function allows to process the signal sent to program
+ *
+ * @param signum signal number to be processed
+ * @return void
+ */ 
+
 
 void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 
@@ -45,38 +57,91 @@ void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 	/* auxiliar variables */
 	int bi,di,i,j;
 
+	
+		blockSize=dic_struct.width*dic_struct.height;
+		imageSize = pgm_struct.width*pgm_struct.height;
+		totBlocks = imageSize/blockSize;
+		lineBlocks = pgm_struct.width/dic_struct.block_width;
 
-	blockSize=dic_struct.width*dic_struct.height;
-	imageSize = pgm_struct.width*pgm_struct.height;
-	totBlocks = imageSize/blockSize;
-	lineBlocks = pgm_struct.width/dic_struct.block_width;
-
-	for (bi = 0; bi < totBlocks; bi++)
-	{
-		bx=bi/lineBlocks;
-		by=bi%lineBlocks;
-		px = bx*dic_struct.width;
-		py = by*dic_struct.height;
-		for (di = 0; di < dic_struct.size; di++)
+		for (bi = 0; bi < totBlocks; bi++)
 		{
-			for (i = px	; i < dic_struct.block_width; i++)
+			bx=bi/lineBlocks;
+			by=bi%lineBlocks;
+			px = bx*dic_struct.width;
+			py = by*dic_struct.height;
+			for (di = 0; di < dic_struct.size; di++)
 			{
-				for (j = 0; j < dic_struct.block_height; j++)
+				for (i = px	; i < dic_struct.block_width; i++)
 				{
-					/* code */
+					for (j = 0; j < dic_struct.block_height; j++)
+					{
+						
+					}
+					
 				}
-				/* code */
 			}
+
+
 		}
 
-
-	}
+	
 }
 
 
+/**
+ * This function allows to process the signal sent to program
+ *
+ * @param signum signal number to be processed
+ * @return void
+ */ 
+void parallelEncode(void) {
+
+
+}
+
+
+/**
+ * This function allows to process the signal sent to program
+ *
+ * @param signum signal number to be processed
+ * @return void
+ */ 
+ 
+void getnewTask(void) {
 
 
 
+}
+
+
+/**
+ * This function allows to process the signal sent to program
+ *
+ * @param signum signal number to be processed
+ * @return void
+ */ 
+ 
+void quadError (void) {
+
+
+
+
+}
+
+
+/**
+ * This function allows to process the signal sent to program
+ *
+ * @param signum signal number to be processed
+ * @return void
+ */ 
+ 
+void singleEncode(void) {
+
+
+
+
+}
 
 
 

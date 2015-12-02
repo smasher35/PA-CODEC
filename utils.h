@@ -46,7 +46,7 @@ void process_signal(int signum);
  * @param dict_filename filename of dictionary file
  * @return void
  */
-void decode_pgm(cod_t cod_struct, dict_t dict_struct, const char *cod_filename, const char *dict_filename);
+void decode_pgm(cod_t cod_struct, dict_t dict_struct, const char *cod_filename);
 /**
  * This function allows decode all the files in the given directory (recursivelly)
  *

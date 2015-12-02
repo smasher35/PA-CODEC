@@ -11,6 +11,7 @@
 #include <time.h>
 #include <signal.h>
 #include <sys/time.h>
+#include <unistd.h>
 #include "debug.h"
 #include "memory.h"
 #include "config.h"
@@ -23,8 +24,7 @@
 
 int main(int argc, char *argv[]) {
 	struct gengetopt_args_info args;
-	cmdline_parser(argc, argv, &args);
-    install_signal_handler();
+	cmdline_parser(argc, argv, &args);   
     struct timeval startTime;
     struct timeval endTime;
     float timeofExecution;
@@ -34,6 +34,8 @@ int main(int argc, char *argv[]) {
     pgm_t pgm = pgm_init();
     dic_t dic = dic_init();
     gettimeofday(&startTime,0);
+
+    install_signal_handler();
     
     // TODO: Measure execution time (use gettimeofday or clock_gettime)
 
@@ -63,8 +65,11 @@ int main(int argc, char *argv[]) {
             }
         }
 
-
     } else if (args.parallel_encode_given) {
+            short numCores = sysconf(_SC_NPROCESSORS_ONLN);
+            printf ("NUMBER OF CORES: %hd",numCores);
+
+
         // TODO: PARALLEL ENCODE IMAGE args.parallel_encode_arg WITH DICTIONARY args.dict_arg
         //       USE args.threads_arg threads if number of threads is positive; else use host number of CPUs
     } else if (args.decode_dir_given) {
@@ -89,4 +94,5 @@ int main(int argc, char *argv[]) {
     cmdline_parser_free(&args);
 	return 0;
 }
+
 
