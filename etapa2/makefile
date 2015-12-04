@@ -37,13 +37,14 @@ ${PROGRAM}: ${PROGRAM_OBJS}
 	${CC} -o $@ ${PROGRAM_OBJS} ${LIBS}
 
 # Dependencies
-main.o: main.c debug.h memory.h config.h pgm.h dic.h utils.h ${PROGRAM_OPT}.h
+main.o: main.c debug.h memory.h config.h pgm.h dic.h utils.h pgmCod.h ${PROGRAM_OPT}.h
 ${PROGRAM_OPT}.o: ${PROGRAM_OPT}.c ${PROGRAM_OPT}.h
 
 config.o: config.c config.h
 debug.o: debug.c debug.h
 memory.o: memory.c memory.h
-utils.o: utils.c utils.h
+utils.o: utils.c utils.h pgm.h dic.h memory.h debug.h pgmCod.h
+
 
 
 #how to create an object file (.o) from C file (.c)
