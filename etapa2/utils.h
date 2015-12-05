@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <string.h>
 #include <libgen.h>
+#include <time.h>
 
 #include "pgm.h"
 #include "dic.h"

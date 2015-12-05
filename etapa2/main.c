@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
         
         if (validate_dic_pgm(pgm, dic) == -1)
         {
-            fprintf(stderr, "FAILURE:incompatible dimensions of file %s with dict %s\n", args.encode_arg, args.dict_arg);
+            fprintf(stderr, "FAILURE:incompatible dimensions of file \'%s\' with dict \'%s\'\n", args.encode_arg, args.dict_arg);
             exit(1);
         }
 

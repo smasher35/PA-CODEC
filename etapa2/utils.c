@@ -1,11 +1,6 @@
 #define _GNU_SOURCE
 
-
-
-
 #include "utils.h"
-
-
 
 int install_signal_handler(void){
 	struct sigaction act;
@@ -31,9 +26,17 @@ int install_signal_handler(void){
  */ 
 
 void process_signal(int signum){
-	fprintf(stderr, "[SIGINT=%d] Operation interrupt by: @user", signum);
+
+	time_t rawtime;
+  	struct tm * now_time;
+
+  	time ( &rawtime );
+
+  	now_time = gmtime ( &rawtime );
+	fprintf(stderr, "[SIGINT] - Operation interrupted by user @%d-%02d-%02d %02dh%02d\n", now_time->tm_year+1900, now_time->tm_mon, now_time->tm_mday, now_time->tm_hour, now_time->tm_min);
 	fcloseall();
 	exit(0);
+
 }
 
 
@@ -67,20 +70,11 @@ void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 	for (block_index = 0; block_index < totBlocks; block_index++)
 	{
 		cod_struct.indexVector_ptr[block_index] = (int)encodeBlockimgX(block_index, pgm_struct, dic_struct, num_blocks_per_line);
+		
 	}
 	cod_struct.num_blocks = totBlocks;
 	build_cod(&cod_struct, pgm_struct, dic_struct, filename);
 	write_pgm_to_file(cod_struct, filename);
-
-
-	/*DEBUG("FILENAME: %s", cod_struct.filename);
-	DEBUG("FORMAT: %d", pgm_struct.header.format);
-	DEBUG("COLUMNS: %d", cod_struct.columns);
-	DEBUG("ROWS: %d", cod_struct.rows);
-	DEBUG("MAX_VALUE: %d", cod_struct.max_value);
-	DEBUG("BLOCK_WIDTH: %d", cod_struct.block_width);
-	DEBUG("BLOCK_HEIGHT: %d", cod_struct.block_height);
-	DEBUG("NUM_BLOCKS: %d", cod_struct.num_blocks);	*/
 
 	free(cod_struct.indexVector_ptr);
 
@@ -321,7 +315,7 @@ void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *f
 	cod_struct->block_width = dic_struct.block_width;
 	cod_struct->block_height = dic_struct.block_height;
 
-		DEBUG("FILENAME @ func param: %s", filename);
+		/*DEBUG("FILENAME @ func param: %s", filename);
 
 	DEBUG("FILENAME @ struct: %s", cod_struct->filename);
 	DEBUG("FORMAT: %d", pgm_struct.header.format);
@@ -330,7 +324,7 @@ void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *f
 	DEBUG("MAX_VALUE: %d", cod_struct->max_value);
 	DEBUG("BLOCK_WIDTH: %d", cod_struct->block_width);
 	DEBUG("BLOCK_HEIGHT: %d", cod_struct->block_height);
-	DEBUG("NUM_BLOCKS: %d", cod_struct->num_blocks);	
+	DEBUG("NUM_BLOCKS: %d", cod_struct->num_blocks);	*/
 
 
 
@@ -354,7 +348,7 @@ void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *f
 
 void write_pgm_to_file(pgmCod_t cod_struct, char *filename)
 {	
-	DEBUG("FILENAME: %s", cod_struct.filename);
+	//DEBUG("FILENAME: %s", cod_struct.filename);
 
 	
 	char dname[MAX_FNAME];
@@ -364,7 +358,7 @@ void write_pgm_to_file(pgmCod_t cod_struct, char *filename)
 	strcat(complete_filename, "/");
 	strcat(complete_filename, cod_struct.filename);
 
-	DEBUG("COMPLETE FILENAME: %s", complete_filename);
+	//DEBUG("COMPLETE FILENAME: %s", complete_filename);
 
 
 	FILE *file;
@@ -387,12 +381,21 @@ void write_pgm_to_file(pgmCod_t cod_struct, char *filename)
 
 int validate_dic_pgm(pgm_t pgm_struct, dic_t dic_struct)
 {
-	if (pgm_struct.header.width % dic_struct.block_width != 0 || pgm_struct.header.height % dic_struct.block_height)
+	/*DEBUG("PGM WIDTH: %d", pgm_struct.header.width);
+	DEBUG("PGM WIDTH: %d", pgm_struct.header.height);
+	DEBUG("DIC BLOCK_WIDTH: %d", dic_struct.block_width);
+	DEBUG("DIC BLOCK_HEIGHT: %d", dic_struct.block_height);*/
+	if (pgm_struct.header.width % dic_struct.block_width != 0 || pgm_struct.header.height % dic_struct.block_height != 0)
 	{
+
 		return -1;
 	}
 	else
 	{
 		return 0;
 	}
+
+
+	//test case: t01-p2-2x2-02.pgm; PGM width is not a multiple of dictionary block width; FAILURE
+
 }
