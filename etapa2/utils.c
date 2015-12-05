@@ -141,6 +141,13 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 			ERROR(C_ERRO_PTHREAD_CREATE, "pthread_create() failed for thread %d!", i);
 	}
 
+
+	param.cod_struct.num_blocks = totBlocks;
+	DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
+	build_cod(&param.cod_struct, pgm_struct, dic_struct, filename);
+	write_pgm_to_file(param.cod_struct);
+
+
 	/** Waint (join) for threads*/
 	for (i = 0 ; i < n_threads ; i++)
 	{
@@ -149,9 +156,9 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 			ERROR(C_ERRO_PTHREAD_JOIN, "pthread_join() failed for thread %d!", i);
 	}
 	
-	param.cod_struct.num_blocks = totBlocks;
-	DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
-	build_cod(&param.cod_struct, pgm_struct, dic_struct, filename);
+	//param.cod_struct.num_blocks = totBlocks;
+	//DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
+	//build_cod(&param.cod_struct, pgm_struct, dic_struct, filename);
 	//write_pgm_to_file(param.cod_struct);
 
 
@@ -160,6 +167,7 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 		ERROR(C_ERRO_MUTEX_DESTROY, "pthread_mutex_destroy() failed!");
 
 	free(param.cod_struct.indexVector_ptr);
+	free (working_threads);
 
 }
 
