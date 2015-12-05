@@ -6,7 +6,7 @@
 typedef struct
 {
 	char filename[MAX_FNAME];	/**< COD filename */
-	char pgm_type[3];	/**< COD file type in string format */
+	int pgm_type;	/**< COD file type in string format */
 	int columns;				/**< original PGM width */
 	int rows;					/**< original PGM height */
 	int max_value;				/**< COD max value */

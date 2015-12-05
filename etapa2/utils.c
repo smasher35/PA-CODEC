@@ -61,16 +61,33 @@ void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 	totBlocks = imageSize/blockSize;
 	num_blocks_per_line = pgm_struct.header.width/dic_struct.block_width;
 
+	//DEBUG("TOTBLOCKS: %d", totBlocks);
+
 	cod_struct.indexVector_ptr = (int*)MALLOC(totBlocks*sizeof(int));
+	cod_struct.num_blocks = 0;
 
     
 
-	for (block_index = 0; block_index < totBlocks-1; block_index++)
+	for (block_index = 0; block_index < totBlocks; block_index++)
 	{
-		cod_struct.indexVector_ptr[block_index] = encodeBlockimgX(block_index, pgm_struct, dic_struct, num_blocks_per_line);
+		cod_struct.indexVector_ptr[block_index] = (int)encodeBlockimgX(block_index, pgm_struct, dic_struct, num_blocks_per_line);
 	}
+	cod_struct.num_blocks = totBlocks;
+	build_cod(&cod_struct, pgm_struct, dic_struct, filename);
+	write_pgm_to_file(cod_struct);
+	
 
-	build_cod(cod_struct, pgm_struct, dic_struct, filename);	
+
+	/*DEBUG("FILENAME: %s", cod_struct.filename);
+	DEBUG("FORMAT: %d", pgm_struct.header.format);
+	DEBUG("COLUMNS: %d", cod_struct.columns);
+	DEBUG("ROWS: %d", cod_struct.rows);
+	DEBUG("MAX_VALUE: %d", cod_struct.max_value);
+	DEBUG("BLOCK_WIDTH: %d", cod_struct.block_width);
+	DEBUG("BLOCK_HEIGHT: %d", cod_struct.block_height);
+	DEBUG("NUM_BLOCKS: %d", cod_struct.num_blocks);	*/
+
+	free(cod_struct.indexVector_ptr);
 
 }
 
@@ -85,9 +102,6 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 
 	PARAM_T param;
 	param.shared_task_ID = 0;
-	pgmCod_t cod_Struct;
-
-
 
 	pthread_t *working_threads;
 	working_threads = (pthread_t*)MALLOC(n_threads*sizeof(pthread_t));
@@ -99,16 +113,10 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 	int blockSize;
 	unsigned int imageSize; /*pgm image size */	
 
-
-
     blockSize=dic_struct.block_width * dic_struct.block_height;
 	imageSize = pgm_struct.header.width * pgm_struct.header.height;
 	totBlocks = imageSize/blockSize;
 	num_blocks_per_line = pgm_struct.header.width/dic_struct.block_width;
-
-	cod_Struct.indexVector_ptr = (int*)MALLOC(totBlocks*sizeof(int));
-
-	*param.cod_Struct.indexVector_ptr = *cod_Struct.indexVector_ptr;
 
 	
 
@@ -119,6 +127,7 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 	param.num_blocks_per_line = num_blocks_per_line;
 	param.pgm_struct = pgm_struct;
 	param.dic_struct = dic_struct;
+	param.cod_struct.indexVector_ptr = (int*)MALLOC(totBlocks*sizeof(int));
 
 	if ((errno = pthread_mutex_init(&param.mutex, NULL)) != 0)
 		ERROR(C_ERRO_MUTEX_INIT, "pthread_mutex_init() failed!");
@@ -140,12 +149,17 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 			ERROR(C_ERRO_PTHREAD_JOIN, "pthread_join() failed for thread %d!", i);
 	}
 	
-
+	param.cod_struct.num_blocks = totBlocks;
+	DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
+	build_cod(&param.cod_struct, pgm_struct, dic_struct, filename);
+	//write_pgm_to_file(param.cod_struct);
 
 
 	/* Destroi o mutex */
 	if ((errno = pthread_mutex_destroy(&param.mutex)) != 0)
 		ERROR(C_ERRO_MUTEX_DESTROY, "pthread_mutex_destroy() failed!");
+
+	free(param.cod_struct.indexVector_ptr);
 
 }
 
@@ -231,7 +245,10 @@ int encodeBlockimgX(unsigned int block_index, pgm_t pgm_struct, dic_t dic_struct
 	int pY = blockY * dic_struct.block_height;
 	int pX = blockX * dic_struct.block_width;
 
-	int match_block = quadError (dic_struct, pgm_struct, pX, pY);	
+	int match_block = quadError (dic_struct, pgm_struct, pX, pY);
+
+		//DEBUG("match_block: %d", match_block);
+	
 
 	return match_block;
 }
@@ -255,9 +272,10 @@ void *processa_bloco(void *arg)
 			break;
 		}
 		match_block = encodeBlockimgX(new_task, param_ptr->pgm_struct, param_ptr->dic_struct, param_ptr->num_blocks_per_line);
-		param_ptr->cod_Struct.indexVector_ptr[new_task] = match_block;
+		param_ptr->cod_struct.indexVector_ptr[new_task] = match_block;
 		
 	}
+
 	return NULL;
 }
 
@@ -288,37 +306,58 @@ int getNewTask(PARAM_T *param_ptr) {
 }
 
 
-void build_cod(pgmCod_t cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *filename)
+void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *filename)
 {
-	strcpy(cod_struct.filename, filename);
-	//todo pgmType
-	cod_struct.columns = pgm_struct.header.width;
-	cod_struct.rows = pgm_struct.header.height;
-	//todo max_value
-	cod_struct.block_width = dic_struct.block_width;
-	cod_struct.block_height = dic_struct.block_height;
-	cod_struct.num_blocks = sizeof(cod_struct.indexVector_ptr)/sizeof(int*);
 
-	DEBUG("FILENAME: %s", cod_struct.filename);
-	DEBUG("COLUMNS: %d", cod_struct.columns);
-	DEBUG("ROWS: %d", cod_struct.rows);
-	DEBUG("BLOCK_WIDTH: %d", cod_struct.block_width);
-	DEBUG("BLOCK_HEIGHT: %d", cod_struct.block_height);
-	DEBUG("NUM_BLOCKS: %d", cod_struct.num_blocks);
+	strcpy(cod_struct->filename, basename(filename));
+	cod_struct->pgm_type = pgm_struct.header.format;
+	cod_struct->columns = pgm_struct.header.width;
+	cod_struct->rows = pgm_struct.header.height;
+	cod_struct->block_width = dic_struct.block_width;
+	cod_struct->block_height = dic_struct.block_height;
 
+	/*Calculate Max value*/
+	int max_value_aux = 0;
+	int i;
+	for (i=0; i<cod_struct->num_blocks; i++)
+	{
+		
+		if (cod_struct->indexVector_ptr[i] > max_value_aux)
+		{
+			cod_struct->max_value = cod_struct->indexVector_ptr[i];
+			max_value_aux = cod_struct->max_value;
+		}
+	}
 
-
-
-	//char filename[MAX_FNAME];	/**< COD filename */
-	//char pgm_type[MAX_FNAME];	/**< COD file type in string format */
-	//int columns;				/**< original PGM width */
-	//int rows;					/**< original PGM height */
-	//int max_value;				/**< COD max value */
-	//int block_width;			/**< used DIC file block width */
-	//int block_height;			/**< used DIC file block height */
-	//int *indexVector_ptr;		/**< array to hold COD file indexes */
-	//int num_blocks;	
+	
 }
 
 
+void write_pgm_to_file(pgmCod_t cod_struct)
+{	
+	DEBUG("FILENAME: %s", cod_struct.filename);
 
+	char *token = strtok(cod_struct.filename, ".");
+	char *bname = token;
+	strcat(bname, ".cod");
+
+	DEBUG("FILENAME: %s", cod_struct.filename);
+
+
+	FILE *file;
+	file = fopen(cod_struct.filename, "w");
+
+	fprintf(file, "Z%d\n", cod_struct.pgm_type);
+	fprintf(file, "%d %d\n", cod_struct.columns, cod_struct.rows);
+	fprintf(file, "%d\n", cod_struct.max_value);
+	fprintf(file, "%d %d\n", cod_struct.block_width, cod_struct.block_height);
+
+	int i;
+	for (i=0; i<cod_struct.num_blocks; i++)
+	{
+		
+		fprintf(file, "%d\n", cod_struct.indexVector_ptr[i]);
+	}
+
+	fclose(file);
+}
