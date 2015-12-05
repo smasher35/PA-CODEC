@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include <libgen.h>
 
 #include "pgm.h"
 #include "dic.h"
@@ -52,7 +53,8 @@ int getNewTask(PARAM_T *param_ptr);
 int  quadError (dic_t dic_struct, pgm_t pgm_struct, int pX, int pY);
 int encodeBlockimgX(unsigned int block_index, pgm_t pgm_struct, dic_t dic_struct, int num_blocks_per_line);
 void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *filename);
-void write_pgm_to_file(pgmCod_t cod_struct);
+void write_pgm_to_file(pgmCod_t cod_struct, char *filename);
+int validate_dic_pgm(pgm_t pgm_struct, dic_t dic_struct);
 /* -------------------------------------------- unfinished functions --------------------------------------- */
 
 

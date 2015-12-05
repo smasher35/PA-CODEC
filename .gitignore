@@ -10,7 +10,7 @@
 
 # Libraries
 *.lib
-*.a
+.a
 *.la
 *.lo
 
@@ -31,3 +31,4 @@
 # Debug files
 *.dSYM/
 /paCodec
+/parte2/tests

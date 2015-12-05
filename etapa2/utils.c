@@ -32,7 +32,6 @@ int install_signal_handler(void){
 
 void process_signal(int signum){
 	fprintf(stderr, "[SIGINT=%d] Operation interrupt by: @user", signum);
-	DEBUG("FIXME: free all resources");
 	fcloseall();
 	exit(0);
 }
@@ -64,18 +63,14 @@ void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 	//DEBUG("TOTBLOCKS: %d", totBlocks);
 
 	cod_struct.indexVector_ptr = (int*)MALLOC(totBlocks*sizeof(int));
-	cod_struct.num_blocks = 0;
-
-    
-
+	
 	for (block_index = 0; block_index < totBlocks; block_index++)
 	{
 		cod_struct.indexVector_ptr[block_index] = (int)encodeBlockimgX(block_index, pgm_struct, dic_struct, num_blocks_per_line);
 	}
 	cod_struct.num_blocks = totBlocks;
 	build_cod(&cod_struct, pgm_struct, dic_struct, filename);
-	write_pgm_to_file(cod_struct);
-	
+	write_pgm_to_file(cod_struct, filename);
 
 
 	/*DEBUG("FILENAME: %s", cod_struct.filename);
@@ -145,7 +140,7 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 	param.cod_struct.num_blocks = totBlocks;
 	DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
 	build_cod(&param.cod_struct, pgm_struct, dic_struct, filename);
-	write_pgm_to_file(param.cod_struct);
+	//write_pgm_to_file(param.cod_struct);
 
 
 	/** Waint (join) for threads*/
@@ -318,6 +313,7 @@ void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *f
 {
 
 	strcpy(cod_struct->filename, basename(filename));
+	strcat(cod_struct->filename, ".cod");
 	cod_struct->pgm_type = pgm_struct.header.format;
 	cod_struct->columns = pgm_struct.header.width;
 	cod_struct->rows = pgm_struct.header.height;
@@ -341,19 +337,23 @@ void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *f
 }
 
 
-void write_pgm_to_file(pgmCod_t cod_struct)
+void write_pgm_to_file(pgmCod_t cod_struct, char *filename)
 {	
 	DEBUG("FILENAME: %s", cod_struct.filename);
 
-	char *token = strtok(cod_struct.filename, ".");
-	char *bname = token;
-	strcat(bname, ".cod");
+	
+	char dname[MAX_FNAME];
+	strcpy(dname, dirname(filename));
+	char complete_filename[MAX_FNAME];
+	strcpy(complete_filename, dname);
+	strcat(complete_filename, "/");
+	strcat(complete_filename, cod_struct.filename);
 
-	DEBUG("FILENAME: %s", cod_struct.filename);
+	DEBUG("COMPLETE FILENAME: %s", complete_filename);
 
 
 	FILE *file;
-	file = fopen(cod_struct.filename, "w");
+	file = fopen(complete_filename, "w");
 
 	fprintf(file, "Z%d\n", cod_struct.pgm_type);
 	fprintf(file, "%d %d\n", cod_struct.columns, cod_struct.rows);
@@ -368,4 +368,16 @@ void write_pgm_to_file(pgmCod_t cod_struct)
 	}
 
 	fclose(file);
+}
+
+int validate_dic_pgm(pgm_t pgm_struct, dic_t dic_struct)
+{
+	if (pgm_struct.header.width % dic_struct.block_width != 0 || pgm_struct.header.height % dic_struct.block_height)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
 }

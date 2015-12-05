@@ -56,10 +56,17 @@ int main(int argc, char *argv[]) {
         status = dic_parse_file(args.dict_arg, &dic);
         if (status != 0) {
             fprintf(stderr, "FAILURE:file '%s' is not a valid DIC file\n", args.dict_arg);
-            return(1);
+            exit(1);
         }
         
-         encodePGM(pgm, dic , args.encode_arg);
+        if (validate_dic_pgm(pgm, dic) == -1)
+        {
+            fprintf(stderr, "FAILURE:incompatible dimensions of file %s with dict %s\n", args.encode_arg, args.dict_arg);
+            exit(1);
+        }
+
+
+        encodePGM(pgm, dic , args.encode_arg);
        
 
     } else if (args.parallel_encode_given) {
