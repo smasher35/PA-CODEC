@@ -32,3 +32,5 @@
 *.dSYM/
 /paCodec
 /parte2/tests
+*.cod
+etapa2/pacodec

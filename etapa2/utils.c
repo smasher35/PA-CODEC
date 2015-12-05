@@ -139,8 +139,9 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 
 	param.cod_struct.num_blocks = totBlocks;
 	DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
+	DEBUG("FILENAME parallelEncode param %s", filename);
 	build_cod(&param.cod_struct, pgm_struct, dic_struct, filename);
-	//write_pgm_to_file(param.cod_struct);
+	write_pgm_to_file(param.cod_struct, filename);
 
 
 	/** Waint (join) for threads*/
@@ -319,6 +320,20 @@ void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *f
 	cod_struct->rows = pgm_struct.header.height;
 	cod_struct->block_width = dic_struct.block_width;
 	cod_struct->block_height = dic_struct.block_height;
+
+		DEBUG("FILENAME @ func param: %s", filename);
+
+	DEBUG("FILENAME @ struct: %s", cod_struct->filename);
+	DEBUG("FORMAT: %d", pgm_struct.header.format);
+	DEBUG("COLUMNS: %d", cod_struct->columns);
+	DEBUG("ROWS: %d", cod_struct->rows);
+	DEBUG("MAX_VALUE: %d", cod_struct->max_value);
+	DEBUG("BLOCK_WIDTH: %d", cod_struct->block_width);
+	DEBUG("BLOCK_HEIGHT: %d", cod_struct->block_height);
+	DEBUG("NUM_BLOCKS: %d", cod_struct->num_blocks);	
+
+
+
 
 	/*Calculate Max value*/
 	int max_value_aux = 0;

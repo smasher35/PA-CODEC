@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 
         int status = pgm_parse_file(args.parallel_encode_arg, &pgm);
         if (status != 0) {
-            fprintf(stderr, "FAILURE:file '%s' is not a valid PGM file\n", args.encode_arg);
+            fprintf(stderr, "FAILURE:file '%s' is not a valid PGM file\n", args.parallel_encode_arg);
             return 1;
         }
 
@@ -94,12 +94,8 @@ int main(int argc, char *argv[]) {
         }
         DEBUG("NUMBER OF THREADS TO BY USED: %hd \n", numThreads);
 
-        parallelEncode(pgm, dic, args.encode_arg, numThreads);
+        parallelEncode(pgm, dic, args.parallel_encode_arg, numThreads);
 
-
-
-        // TODO: PARALLEL ENCODE IMAGE args.parallel_encode_arg WITH DICTIONARY args.dict_arg
-        //       USE args.threads_arg threads if number of threads is positive; else use host number of CPUs
     } else if (args.decode_dir_given) {
         printf("[DO NOT IMPLEMENT OR FIX]\n");
     } else if (args.about_given) {
