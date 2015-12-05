@@ -31,6 +31,7 @@
 # Debug files
 *.dSYM/
 /paCodec
-/parte2/tests/*.*
+/etapa2/tests/*
+/etapa2/tests/*.*
 *.cod
 etapa2/pacodec
