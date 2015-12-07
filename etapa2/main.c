@@ -21,9 +21,6 @@
 #include "dic.h"
 #include "utils.h"
 
-// TODO: include other libraries
-
-
 int main(int argc, char *argv[]) {
 	struct gengetopt_args_info args;
 	cmdline_parser(argc, argv, &args);   
@@ -92,8 +89,7 @@ int main(int argc, char *argv[]) {
         {
             numThreads = sysconf(_SC_NPROCESSORS_ONLN);            
         }
-        DEBUG("NUMBER OF THREADS TO BY USED: %hd \n", numThreads);
-
+       
         parallelEncode(pgm, dic, args.parallel_encode_arg, numThreads);
 
     } else if (args.decode_dir_given) {
@@ -108,7 +104,6 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    // TODO: Check if operation was interrupted and print the "interrupted by user" message
     pgm_free(&pgm);
     dic_free(&dic);
     cmdline_parser_free(&args);

@@ -1,0 +1,167 @@
+Checking that you appear to be in the project directory...
+Creating test directory './tests' if necessary...
+Changing to test directory './tests'...
+
+
+*******************************
+** Testing ENCODE option 
+*******************************
+
+Copying test cases...
+---------------------------------------------------------------------
+test case: t01-p2-2x2-01.pgm; P2 with size multiple of 2 (1); SUCCESS
+test case: t01-p2-2x2-02.pgm; P2 with size multiple of 2 (2); SUCCESS
+test case: t01-p2-2x2-03.pgm; P2 with size multiple of 2 (3); SUCCESS
+test case: t01-p2-2x2-04.pgm; P2 with size multiple of 2 (4); SUCCESS
+test case: t01-p2-2x2-05.pgm; P2 with size multiple of 2 (5); SUCCESS
+test case: t01-p2-2x4-01.pgm; P2 with height multiple of 4 (1); SUCCESS
+test case: t01-p2-2x4-02.pgm; P2 with height multiple of 4 (2); SUCCESS
+test case: t01-p2-2x4-03.pgm; P2 with height multiple of 4 (3); SUCCESS
+test case: t01-p2-2x8-01.pgm; P2 with height multiple of 8 (1); SUCCESS
+test case: t01-p2-2x8-02.pgm; P2 with height multiple of 8 (2); SUCCESS
+test case: t01-p2-4x2-01.pgm; P2 with width multiple of 4 (1); SUCCESS
+test case: t01-p2-4x2-02.pgm; P2 with width multiple of 4 (2); SUCCESS
+test case: t01-p2-4x2-03.pgm; P2 with width multiple of 4 (3); SUCCESS
+test case: t01-p2-8x2-01.pgm; P2 with width multiple of 8 (1); SUCCESS
+test case: t01-p2-8x2-02.pgm; P2 with width multiple of 8 (2); SUCCESS
+test case: t01-p5-2x2-01.pgm; P5 with size multiple of 2 (1); FAILURE
+test case: t01-p5-2x2-02.pgm; P5 with size multiple of 2 (2); FAILURE
+test case: t01-p5-2x2-03.pgm; P5 with size multiple of 2 (3); SUCCESS
+test case: t01-p5-2x2-04.pgm; P5 with size multiple of 2 (4); SUCCESS
+test case: t01-p5-2x2-05.pgm; P5 with size multiple of 2 (5); SUCCESS
+test case: t01-p5-2x4-01.pgm; P5 with height multiple of 4 (1); SUCCESS
+test case: t01-p5-2x4-02.pgm; P5 with height multiple of 4 (2); SUCCESS
+test case: t01-p5-2x4-03.pgm; P5 with height multiple of 4 (3); SUCCESS
+test case: t01-p5-2x8-01.pgm; P5 with height multiple of 8 (1); SUCCESS
+test case: t01-p5-2x8-02.pgm; P5 with height multiple of 8 (2); SUCCESS
+test case: t01-p5-4x2-01.pgm; P5 with width multiple of 4 (1); SUCCESS
+test case: t01-p5-4x2-02.pgm; P5 with width multiple of 4 (2); SUCCESS
+test case: t01-p5-4x2-03.pgm; P5 with width multiple of 4 (3); SUCCESS
+test case: t01-p5-8x2-01.pgm; P5 with width multiple of 8 (1); SUCCESS
+test case: t01-p5-8x2-02.pgm; P5 with width multiple of 8 (2); SUCCESS
+test case: t01-p2-2x2-02.pgm; PGM width is not a multiple of dictionary block width; SUCCESS
+test case: t01-p2-2x2-02.pgm; PGM height is not a multiple of dictionary block height; SUCCESS
+test case: t01-p5-2x2-02.pgm; PGM width is not a multiple of dictionary block width; SUCCESS
+test case: t01-p5-2x2-02.pgm; PGM height is not a multiple of dictionary block height; SUCCESS
+---------------------------------------------------------------------
+
+Score: 32 / 34
+
+test case: ^C for file:  t01-p2-2x2-07.pgm; FAILURE
+test case: ^C for file:  t01-p5-2x2-07.pgm; FAILURE
+
+
+*******************************
+** Testing ENCODE option with big files
+*******************************
+
+Copying test cases...
+---------------------------------------------------------------------
+test case: t01-p2-2x2-06.pgm; P2 with ratio 2:2 (6); SUCCESS
+test case: t01-p5-2x2-06.pgm; P5 with ratio 2:2 (6); SUCCESS
+test case: t02-p2-2x2-01.pgm; P2 big with ratio 2:2 (1); SUCCESS
+test case: t02-p2-2x4-01.pgm; P2 big with ratio 2:4 (1); SUCCESS
+test case: t02-p2-2x8-01.pgm; P2 big with ratio 2:8 (1); SUCCESS
+test case: t02-p2-4x2-01.pgm; P2 big with ratio 4:2 (1); SUCCESS
+test case: t02-p2-4x8-01.pgm; P2 big with ratio 4:8 (1); SUCCESS
+test case: t02-p5-2x2-01.pgm; P5 big with ratio 2:2 (1); SUCCESS
+test case: t02-p5-2x4-01.pgm; P5 big with ratio 2:4 (1); SUCCESS
+test case: t02-p5-4x2-01.pgm; P5 big with ratio 4:2 (1); SUCCESS
+---------------------------------------------------------------------
+
+Score: 10 / 10
+
+
+
+*******************************
+** Testing ENCODE option with different block sizes
+*******************************
+
+Copying test cases...
+---------------------------------------------------------------------
+test case: p2.pgm;  P2 using a dictionary multiple of the image width (1); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image width (2); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image width (3); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image width (4); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image width (5); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image width (6); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image height (1); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image height (2); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image height (3); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image height (4); SUCCESS
+test case: p2.pgm;  P2 using a dictionary multiple of the image height (5); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image width (1); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image width (2); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image width (3); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image width (4); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image width (5); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image width (6); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image height (1); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image height (2); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image height (3); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image height (4); SUCCESS
+test case: p5.pgm;  P5 using a dictionary multiple of the image height (5); SUCCESS
+---------------------------------------------------------------------
+
+Score: 22 / 22
+
+
+
+*******************************
+** Testing PARALLEL ENCODE option 
+*******************************
+
+Copying test cases...
+---------------------------------------------------------------------
+test case: t01-p2-2x2-07.pgm; P2 with ratio 2:2 (7); threads: CPU Count; SUCCESS
+test case: t01-p2-2x2-07.pgm; P2 with ratio 2:2 (7); threads: 1; SUCCESS
+test case: t01-p2-2x2-07.pgm; P2 with ratio 2:2 (7); threads: 3; SUCCESS
+test case: t01-p2-2x2-07.pgm; P2 with ratio 2:2 (7); threads: 5; SUCCESS
+test case: t01-p2-2x2-07.pgm; P2 with ratio 2:2 (7); threads: 7; SUCCESS
+test case: t01-p2-2x2-07.pgm; P2 with ratio 2:2 (7); threads: 9; SUCCESS
+test case: t01-p5-2x2-07.pgm; P5 with ratio 2:2 (7); threads: CPU Count; SUCCESS
+test case: t01-p5-2x2-07.pgm; P5 with ratio 2:2 (7); threads: 1; SUCCESS
+test case: t01-p5-2x2-07.pgm; P5 with ratio 2:2 (7); threads: 3; SUCCESS
+test case: t01-p5-2x2-07.pgm; P5 with ratio 2:2 (7); threads: 5; SUCCESS
+test case: t01-p5-2x2-07.pgm; P5 with ratio 2:2 (7); threads: 7; SUCCESS
+test case: t01-p5-2x2-07.pgm; P5 with ratio 2:2 (7); threads: 9; SUCCESS
+test case: t02-p2-2x2-02.pgm; P2 big with ratio 2:2 (1); threads: CPU Count; SUCCESS
+test case: t02-p2-2x2-02.pgm; P2 big with ratio 2:2 (1); threads: 1; SUCCESS
+test case: t02-p2-2x2-02.pgm; P2 big with ratio 2:2 (1); threads: 3; SUCCESS
+test case: t02-p2-2x2-02.pgm; P2 big with ratio 2:2 (1); threads: 5; SUCCESS
+test case: t02-p2-2x2-02.pgm; P2 big with ratio 2:2 (1); threads: 7; SUCCESS
+test case: t02-p2-2x2-02.pgm; P2 big with ratio 2:2 (1); threads: 9; SUCCESS
+test case: t02-p2-2x8-01.pgm; P2 big with ratio 2:8 (1); threads: CPU Count; SUCCESS
+test case: t02-p2-2x8-01.pgm; P2 big with ratio 2:8 (1); threads: 1; SUCCESS
+test case: t02-p2-2x8-01.pgm; P2 big with ratio 2:8 (1); threads: 3; SUCCESS
+test case: t02-p2-2x8-01.pgm; P2 big with ratio 2:8 (1); threads: 5; SUCCESS
+test case: t02-p2-2x8-01.pgm; P2 big with ratio 2:8 (1); threads: 7; SUCCESS
+test case: t02-p2-2x8-01.pgm; P2 big with ratio 2:8 (1); threads: 9; SUCCESS
+test case: t02-p2-4x8-01.pgm; P2 big with ratio 4:8 (1); threads: CPU Count; SUCCESS
+test case: t02-p2-4x8-01.pgm; P2 big with ratio 4:8 (1); threads: 1; SUCCESS
+test case: t02-p2-4x8-01.pgm; P2 big with ratio 4:8 (1); threads: 3; SUCCESS
+test case: t02-p2-4x8-01.pgm; P2 big with ratio 4:8 (1); threads: 5; SUCCESS
+test case: t02-p2-4x8-01.pgm; P2 big with ratio 4:8 (1); threads: 7; SUCCESS
+test case: t02-p2-4x8-01.pgm; P2 big with ratio 4:8 (1); threads: 9; SUCCESS
+test case: t02-p5-2x2-02.pgm; P5 big with ratio 2:2 (1); threads: CPU Count; SUCCESS
+test case: t02-p5-2x2-02.pgm; P5 big with ratio 2:2 (1); threads: 1; SUCCESS
+test case: t02-p5-2x2-02.pgm; P5 big with ratio 2:2 (1); threads: 3; SUCCESS
+test case: t02-p5-2x2-02.pgm; P5 big with ratio 2:2 (1); threads: 5; SUCCESS
+test case: t02-p5-2x2-02.pgm; P5 big with ratio 2:2 (1); threads: 7; SUCCESS
+test case: t02-p5-2x2-02.pgm; P5 big with ratio 2:2 (1); threads: 9; SUCCESS
+test case: t02-p5-2x8-01.pgm; P5 big with ratio 2:8 (1); threads: CPU Count; SUCCESS
+test case: t02-p5-2x8-01.pgm; P5 big with ratio 2:8 (1); threads: 1; SUCCESS
+test case: t02-p5-2x8-01.pgm; P5 big with ratio 2:8 (1); threads: 3; SUCCESS
+test case: t02-p5-2x8-01.pgm; P5 big with ratio 2:8 (1); threads: 5; SUCCESS
+test case: t02-p5-2x8-01.pgm; P5 big with ratio 2:8 (1); threads: 7; SUCCESS
+test case: t02-p5-2x8-01.pgm; P5 big with ratio 2:8 (1); threads: 9; SUCCESS
+test case: t02-p5-4x8-01.pgm; P5 big with ratio 4:8 (1); threads: CPU Count; SUCCESS
+test case: t02-p5-4x8-01.pgm; P5 big with ratio 4:8 (1); threads: 1; SUCCESS
+test case: t02-p5-4x8-01.pgm; P5 big with ratio 4:8 (1); threads: 3; SUCCESS
+test case: t02-p5-4x8-01.pgm; P5 big with ratio 4:8 (1); threads: 5; SUCCESS
+test case: t02-p5-4x8-01.pgm; P5 big with ratio 4:8 (1); threads: 7; SUCCESS
+test case: t02-p5-4x8-01.pgm; P5 big with ratio 4:8 (1); threads: 9; SUCCESS
+---------------------------------------------------------------------
+
+Score: 48 / 48
+

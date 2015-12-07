@@ -2,6 +2,8 @@
 
 #include "utils.h"
 
+#define HEX(num) ((num) & 0x000000FF)
+
 int install_signal_handler(void){
 	struct sigaction act;
 	int exit_code = 1;
@@ -29,13 +31,15 @@ void process_signal(int signum){
 
 	time_t rawtime;
   	struct tm * now_time;
-
-  	time ( &rawtime );
-
-  	now_time = gmtime ( &rawtime );
-	fprintf(stderr, "[SIGINT] - Operation interrupted by user @%d-%02d-%02d %02dh%02d\n", now_time->tm_year+1900, now_time->tm_mon, now_time->tm_mday, now_time->tm_hour, now_time->tm_min);
-	fcloseall();
-	exit(0);
+  	if (signum == SIGINT)
+  	{
+	  	time ( &rawtime );
+	  	now_time = gmtime ( &rawtime );
+		fprintf(stderr, "\n[SIGINT] - Operation interrupted by user @%d-%02d-%02d %02dh%02d\n" ,now_time->tm_year+1900, now_time->tm_mon, now_time->tm_mday, now_time->tm_hour, now_time->tm_min);
+		fcloseall();
+		exit(0);
+  	}
+  	
 
 }
 
@@ -74,7 +78,15 @@ void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 	}
 	cod_struct.num_blocks = totBlocks;
 	build_cod(&cod_struct, pgm_struct, dic_struct, filename);
-	write_pgm_to_file(cod_struct, filename);
+	if (cod_struct.pgm_type == 2)
+	{
+		write_z2_cod_to_file(cod_struct, filename);
+	}
+	else if (cod_struct.pgm_type == 5)
+	{
+		write_z5_cod_to_file(cod_struct, filename);
+	}
+	
 
 	free(cod_struct.indexVector_ptr);
 
@@ -132,10 +144,9 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 
 
 	param.cod_struct.num_blocks = totBlocks;
-	DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
-	DEBUG("FILENAME parallelEncode param %s", filename);
-	build_cod(&param.cod_struct, pgm_struct, dic_struct, filename);
-	write_pgm_to_file(param.cod_struct, filename);
+	//DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
+	//DEBUG("FILENAME parallelEncode param %s", filename);
+	
 
 
 	/** Waint (join) for threads*/
@@ -146,16 +157,22 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 			ERROR(C_ERRO_PTHREAD_JOIN, "pthread_join() failed for thread %d!", i);
 	}
 	
-	//param.cod_struct.num_blocks = totBlocks;
-	//DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
-	//build_cod(&param.cod_struct, pgm_struct, dic_struct, filename);
-	//write_pgm_to_file(param.cod_struct);
-
-
+	
 	/* Destroi o mutex */
 	if ((errno = pthread_mutex_destroy(&param.mutex)) != 0)
 		ERROR(C_ERRO_MUTEX_DESTROY, "pthread_mutex_destroy() failed!");
 
+	build_cod(&param.cod_struct, pgm_struct, dic_struct, filename);
+	
+	if (param.cod_struct.pgm_type == 2)
+	{
+		write_z2_cod_to_file(param.cod_struct, filename);
+	}
+	else if (param.cod_struct.pgm_type == 5)
+	{
+		write_z5_cod_to_file(param.cod_struct, filename);
+	}
+	
 	free(param.cod_struct.indexVector_ptr);
 	free (working_threads);
 
@@ -189,6 +206,8 @@ int quadError (dic_t dic_struct, pgm_t pgm_struct, int pX, int pY) {
     	unsigned int match_pixels = 0;
     	 for (i = 0; i < dic_struct.block_height; ++i) {
     	    for (j = 0; j < dic_struct.block_width; ++j) {
+
+    	    	//DEBUG("uSleep here"); usleep(5000);
 
 	    	    pixel_value_at_dict = dic_get_pixel(&dic_struct, dict_index, j, i);
 
@@ -315,20 +334,6 @@ void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *f
 	cod_struct->block_width = dic_struct.block_width;
 	cod_struct->block_height = dic_struct.block_height;
 
-		/*DEBUG("FILENAME @ func param: %s", filename);
-
-	DEBUG("FILENAME @ struct: %s", cod_struct->filename);
-	DEBUG("FORMAT: %d", pgm_struct.header.format);
-	DEBUG("COLUMNS: %d", cod_struct->columns);
-	DEBUG("ROWS: %d", cod_struct->rows);
-	DEBUG("MAX_VALUE: %d", cod_struct->max_value);
-	DEBUG("BLOCK_WIDTH: %d", cod_struct->block_width);
-	DEBUG("BLOCK_HEIGHT: %d", cod_struct->block_height);
-	DEBUG("NUM_BLOCKS: %d", cod_struct->num_blocks);	*/
-
-
-
-
 	/*Calculate Max value*/
 	int max_value_aux = 0;
 	int i;
@@ -346,7 +351,7 @@ void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *f
 }
 
 
-void write_pgm_to_file(pgmCod_t cod_struct, char *filename)
+void write_z2_cod_to_file(pgmCod_t cod_struct, char *filename)
 {	
 	//DEBUG("FILENAME: %s", cod_struct.filename);
 
@@ -398,4 +403,42 @@ int validate_dic_pgm(pgm_t pgm_struct, dic_t dic_struct)
 
 	//test case: t01-p2-2x2-02.pgm; PGM width is not a multiple of dictionary block width; FAILURE
 
+}
+
+void write_z5_cod_to_file(pgmCod_t cod_struct, char *filename)
+{
+	//DEBUG("FILENAME: %s", cod_struct.filename);
+	
+	char dname[MAX_FNAME];
+	strcpy(dname, dirname(filename));
+	char complete_filename[MAX_FNAME];
+	strcpy(complete_filename, dname);
+	strcat(complete_filename, "/");
+	strcat(complete_filename, cod_struct.filename);
+
+	//DEBUG("COMPLETE FILENAME: %s", complete_filename);
+
+
+	FILE *file;
+	file = fopen(complete_filename, "w");
+
+	fprintf(file, "Z%d\n", cod_struct.pgm_type);
+	fprintf(file, "%d %d\n", cod_struct.columns, cod_struct.rows);
+	fprintf(file, "%d\n", cod_struct.max_value);
+	fprintf(file, "%d %d\n", cod_struct.block_width, cod_struct.block_height);
+
+	int i;
+	//int hex;
+	for (i=0; i<cod_struct.num_blocks; i++)
+	{
+		unsigned short aux;
+		aux = (unsigned short)cod_struct.indexVector_ptr[i];
+		fwrite(&aux, sizeof(unsigned short), 1, file);	
+		//hex = HEX(cod_struct.indexVector_ptr[i]);
+        //        fputc(hex, file);
+	}
+	//fwrite(cod_struct.indexVector_ptr,sizeof(cod_struct.indexVector_ptr),1,file);
+	
+
+	fclose(file);
 }
