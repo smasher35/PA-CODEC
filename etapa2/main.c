@@ -1,10 +1,12 @@
 /**
 * @file main.c
-* @brief Description
-* @date 2015-11-25
+* @brief Description - this files holds the calls to the functions related to the second project delivery, in program pacodec
+* @date 2015-12-19
 * @author vitor.carreira@ipleiria.pt
 * @author eiYxxxxx@student.estg.ipleiria.pt
+* @author Paulo Penicheiro nº 2130628 Ruben Miguel nº 2130664
 */
+
 
 #include <stdio.h>
 #include <string.h>
@@ -36,6 +38,11 @@ int main(int argc, char *argv[]) {
     install_signal_handler();
     
     // TODO: Measure execution time (use gettimeofday or clock_gettime)
+
+    /** About the authors */
+     if (args_info.about_given){
+        about();
+     }
 
     if (args.decode_given) {
         printf("[DO NOT IMPLEMENT OR FIX]\n");

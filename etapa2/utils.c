@@ -1,9 +1,36 @@
+/**
+ * @file utils.c
+ * @brief Description - this files holds the functions related to the second project delivery, in program paCodec
+ * @author Paulo Penicheiro nº 2130628 Ruben Miguel nº 2130664
+ * @date Dezembro - 2015
+ * @version 1 
+ */
 #define _GNU_SOURCE
 
 #include "utils.h"
 
 #define HEX(num) ((num) & 0x000000FF)
 
+/**
+ * This function display information about the program paCodec
+ *
+ * @return Void
+ */
+void about(void){
+	printf("==================== paCodec Authors ====================\n");
+	printf("* Paulo Penicheiro - 2130628                            *\n");
+	printf("* Ruben Miguel - 2130664                                *\n");
+	printf("* ---------------------------                           *\n");
+	printf("* UC - Programacao Avancada                             *\n");
+	printf("* 2015 - 2016                                           *\n");
+	printf("=========================================================\n");
+}
+
+/**
+ * This function allows to install a signal handler
+ *
+ * @return 0 on success
+ */
 int install_signal_handler(void){
 	struct sigaction act;
 	int exit_code = 1;
@@ -39,19 +66,18 @@ void process_signal(int signum){
 		fcloseall();
 		exit(0);
   	}
-  	
-
 }
 
 
 /**
- * This function allows to process the signal sent to program
+ * This function allows encode the given .pgm file
  *
- * @param signum signal number to be processed
+ * @param pgm_struct structure with the decoded file data
+ * @param dict_struct structure with the dictionary file data
+ * @param pgm_filename filename of decoded file
+ * @param dict_filename filename of dictionary file
  * @return void
- */ 
-
-
+ */
 void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 
 	int num_blocks_per_line; /* gives the amount of blocks per liner of the image */
@@ -67,7 +93,6 @@ void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 	totBlocks = imageSize/blockSize;
 	num_blocks_per_line = pgm_struct.header.width/dic_struct.block_width;
 
-	//DEBUG("TOTBLOCKS: %d", totBlocks);
 
 	cod_struct.indexVector_ptr = (int*)MALLOC(totBlocks*sizeof(int));
 	
@@ -92,13 +117,15 @@ void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 
 }
 
-
 /**
- * This function allows to process the signal sent to program
- *
- * @param signum signal number to be processed
+ * This function allows encode the given .pgm file using threads
+ * @param pgm_struct structure with the decoded file data
+ * @param dict_struct structure with the dictionary file data
+ * @param pgm_filename filename of decoded file
+ * @param dict_filename filename of dictionary file
+ * @param n_threads number of threads
  * @return void
- */ 
+ */
 void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_threads) {
 
 	PARAM_T param;
@@ -120,7 +147,6 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 	num_blocks_per_line = pgm_struct.header.width/dic_struct.block_width;
 
 	
-
 	/* Init Shared Data */
 	memset(&param, 0, sizeof(param));
 	param.shared_task_ID = 0;
@@ -138,7 +164,7 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 	for (i = 0 ; i < n_threads ; i++)
 	{
 		/* Cria thread para executar o produtor */
-		if ((errno = pthread_create(&working_threads[i], NULL, processa_bloco, &param)) != 0)
+		if ((errno = pthread_create(&working_threads[i], NULL, process_block, &param)) != 0)
 			ERROR(C_ERRO_PTHREAD_CREATE, "pthread_create() failed for thread %d!", i);
 	}
 
@@ -179,12 +205,14 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 }
 
 /**
- * This function allows to process the signal sent to program
+ * This function calculates quadratic error between dictionary block and pgm block
  *
- * @param signum signal number to be processed
+ * @param dict_struct structure with the dictionary file data
+ * @param pgm_struct structure with the decoded file data
+ * @param pX X coordenate of pixel
+ * @param pY Y coordenat of pixel 
  * @return void
- */ 
- 
+ */
 int quadError (dic_t dic_struct, pgm_t pgm_struct, int pX, int pY) {
 
  	unsigned int i,j;
@@ -246,9 +274,11 @@ int quadError (dic_t dic_struct, pgm_t pgm_struct, int pX, int pY) {
 
 
 /**
- * This function allows to process the signal sent to program
- *
- * @param signum signal number to be processed
+ * This function calculates the coordenates of the pixels to compare between Dictionary and pgm file
+ * @param block_index the index of the current block
+ * @param pgm_struct structure with the decoded file data
+ * @param dic_struct structure with the dictionary file data
+ * @param num_blocks_per_line gives the ammount of blocks per line of the pgm file
  * @return void
  */ 
  
@@ -272,7 +302,15 @@ int encodeBlockimgX(unsigned int block_index, pgm_t pgm_struct, dic_t dic_struct
 
 
 
-void *processa_bloco(void *arg)
+/**
+ * This function calculates the coordenates of the pixels to compare between Dictionary and pgm file
+ * @param block_index the index of the current block
+ * @param pgm_struct structure with the decoded file data
+ * @param dic_struct structure with the dictionary file data
+ * @param num_blocks_per_line gives the ammount of blocks per line of the pgm file
+ * @return void
+ */ 
+void *process_block(void *arg)
 {
 	PARAM_T *param_ptr = (PARAM_T *) arg; 
 	//int i;
@@ -427,13 +465,20 @@ void write_z5_cod_to_file(pgmCod_t cod_struct, char *filename)
 	fprintf(file, "%d\n", cod_struct.max_value);
 	fprintf(file, "%d %d\n", cod_struct.block_width, cod_struct.block_height);
 
+	int bytesToWrite = 1;
 	int i;
 	//int hex;
+	if(cod_struct.max_value >=256 ) {
+
+		bytesToWrite = 2;
+
+	}
 	for (i=0; i<cod_struct.num_blocks; i++)
 	{
 		unsigned short aux;
 		aux = (unsigned short)cod_struct.indexVector_ptr[i];
-		fwrite(&aux, sizeof(unsigned short), 1, file);	
+
+		fwrite(&aux, bytesToWrite, 1, file);	
 		//hex = HEX(cod_struct.indexVector_ptr[i]);
         //        fputc(hex, file);
 	}

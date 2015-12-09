@@ -43,14 +43,14 @@ typedef struct
 	pgmCod_t cod_struct;
 } PARAM_T;
 
-
+void about(void);
 void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename);
 void process_signal(int signum);
 
 int install_signal_handler(void);
 void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_threads);
 int getnewTask(PARAM_T *param_ptr);
-void *processa_bloco(void *arg);
+void *process_block(void *arg);
 int getNewTask(PARAM_T *param_ptr);
 int  quadError (dic_t dic_struct, pgm_t pgm_struct, int pX, int pY);
 int encodeBlockimgX(unsigned int block_index, pgm_t pgm_struct, dic_t dic_struct, int num_blocks_per_line);
