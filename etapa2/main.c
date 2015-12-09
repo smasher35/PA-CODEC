@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     // TODO: Measure execution time (use gettimeofday or clock_gettime)
 
     /** About the authors */
-     if (args_info.about_given){
+     if (args.about_given){
         about();
      }
 

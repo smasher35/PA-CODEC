@@ -9,7 +9,6 @@
 
 #include "utils.h"
 
-#define HEX(num) ((num) & 0x000000FF)
 
 /**
  * This function display information about the program paCodec
@@ -87,7 +86,6 @@ void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 	unsigned int imageSize; /*pgm image size */
 
 	pgmCod_t cod_struct;
-
     blockSize=dic_struct.block_width * dic_struct.block_height;
 	imageSize = pgm_struct.header.width * pgm_struct.header.height;
 	totBlocks = imageSize/blockSize;
@@ -111,10 +109,7 @@ void encodePGM(pgm_t pgm_struct, dic_t dic_struct, char *filename) {
 	{
 		write_z5_cod_to_file(cod_struct, filename);
 	}
-	
-
 	free(cod_struct.indexVector_ptr);
-
 }
 
 /**
@@ -163,18 +158,14 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
 	int i;
 	for (i = 0 ; i < n_threads ; i++)
 	{
-		/* Cria thread para executar o produtor */
+		
 		if ((errno = pthread_create(&working_threads[i], NULL, process_block, &param)) != 0)
 			ERROR(C_ERRO_PTHREAD_CREATE, "pthread_create() failed for thread %d!", i);
 	}
 
 
 	param.cod_struct.num_blocks = totBlocks;
-	//DEBUG("TOTBLOCKS %d", param.cod_struct.num_blocks);
-	//DEBUG("FILENAME parallelEncode param %s", filename);
 	
-
-
 	/** Waint (join) for threads*/
 	for (i = 0 ; i < n_threads ; i++)
 	{
@@ -211,20 +202,18 @@ void parallelEncode(pgm_t pgm_struct, dic_t dic_struct, char *filename, int n_th
  * @param pgm_struct structure with the decoded file data
  * @param pX X coordenate of pixel
  * @param pY Y coordenat of pixel 
- * @return void
+ * @return int returns the block index with lowest distortion value
  */
 int quadError (dic_t dic_struct, pgm_t pgm_struct, int pX, int pY) {
 
  	unsigned int i,j;
     unsigned short pixel_value_at_dict;
     unsigned short pixel_value_at_img;
+    int dict_index;
     
-
     block_distortion_t distort_struct;    
     distort_struct.distortion = INT_MAX;
     
-   
-    int dict_index;
     for (dict_index = 0; dict_index < dic_struct.size; dict_index++)
     {
     	
@@ -234,11 +223,7 @@ int quadError (dic_t dic_struct, pgm_t pgm_struct, int pX, int pY) {
     	unsigned int match_pixels = 0;
     	 for (i = 0; i < dic_struct.block_height; ++i) {
     	    for (j = 0; j < dic_struct.block_width; ++j) {
-
-    	    	//DEBUG("uSleep here"); usleep(5000);
-
 	    	    pixel_value_at_dict = dic_get_pixel(&dic_struct, dict_index, j, i);
-
 	    	    pixel_value_at_img = pgm_struct.pixels[pY+i][pX+j];
 	    	    result = pixel_value_at_dict - pixel_value_at_img;
 	    	    quadResult = result * result;
@@ -262,14 +247,10 @@ int quadError (dic_t dic_struct, pgm_t pgm_struct, int pX, int pY) {
     	{
     		distort_struct.block_index = dict_index;
     		distort_struct.distortion = distortion;
-    	}
-
-    
+    	}   
     }
 
     return distort_struct.block_index;
-     
-
 }
 
 
@@ -279,35 +260,25 @@ int quadError (dic_t dic_struct, pgm_t pgm_struct, int pX, int pY) {
  * @param pgm_struct structure with the decoded file data
  * @param dic_struct structure with the dictionary file data
  * @param num_blocks_per_line gives the ammount of blocks per line of the pgm file
- * @return void
+ * @return int returns the best matched block index
  */ 
  
 int encodeBlockimgX(unsigned int block_index, pgm_t pgm_struct, dic_t dic_struct, int num_blocks_per_line) {
 
 	int blockX = block_index % num_blocks_per_line;
 	int blockY = block_index / num_blocks_per_line;
-
-	//DEBUG("blockX: %d,,,,,blockY: %d", blockX,blockY);
-
 	int pY = blockY * dic_struct.block_height;
 	int pX = blockX * dic_struct.block_width;
-
 	int match_block = quadError (dic_struct, pgm_struct, pX, pY);
-
-		//DEBUG("match_block: %d", match_block);
 	
-
 	return match_block;
 }
 
 
-
 /**
- * This function calculates the coordenates of the pixels to compare between Dictionary and pgm file
- * @param block_index the index of the current block
- * @param pgm_struct structure with the decoded file data
- * @param dic_struct structure with the dictionary file data
- * @param num_blocks_per_line gives the ammount of blocks per line of the pgm file
+ * This function processes the image block and it's called whenener a new thread is created
+ * @param arg params of the function
+ * 
  * @return void
  */ 
 void *process_block(void *arg)
@@ -330,16 +301,15 @@ void *process_block(void *arg)
 		param_ptr->cod_struct.indexVector_ptr[new_task] = match_block;
 		
 	}
-
 	return NULL;
 }
 
 
 /**
- * This function allows to process the signal sent to program
+ * This function to attribute the block to be processed
  *
- * @param signum signal number to be processed
- * @return void
+ * @param param_ptr 
+ * @return int returns the new task ID
  */ 
  
 int getNewTask(PARAM_T *param_ptr) {
@@ -356,11 +326,19 @@ int getNewTask(PARAM_T *param_ptr) {
 	{
 		my_taskID = -1; /**< no more tasks **/
 	}
-	
 	return my_taskID;
 }
 
 
+/**
+ * This function builds the encoded file
+ *
+ * @param cod_struct structure to the encoded file
+ * @param pgm_struct structure with the decoded file data
+ * @param dict_struct structure with the dictionary file data
+ * @param pgm_filename filename of decoded file
+ * @return void
+ */ 
 void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *filename)
 {
 
@@ -384,25 +362,24 @@ void build_cod(pgmCod_t *cod_struct, pgm_t pgm_struct, dic_t dic_struct, char *f
 			max_value_aux = cod_struct->max_value;
 		}
 	}
-
-	
 }
 
 
+/**
+ * This function writes z2 cod file
+ *
+ * @param cod_struct structure to the encoded file
+ * @param filename filename of encoded file
+ * @return void
+ */ 
 void write_z2_cod_to_file(pgmCod_t cod_struct, char *filename)
 {	
-	//DEBUG("FILENAME: %s", cod_struct.filename);
-
-	
 	char dname[MAX_FNAME];
 	strcpy(dname, dirname(filename));
 	char complete_filename[MAX_FNAME];
 	strcpy(complete_filename, dname);
 	strcat(complete_filename, "/");
 	strcat(complete_filename, cod_struct.filename);
-
-	//DEBUG("COMPLETE FILENAME: %s", complete_filename);
-
 
 	FILE *file;
 	file = fopen(complete_filename, "w");
@@ -422,31 +399,36 @@ void write_z2_cod_to_file(pgmCod_t cod_struct, char *filename)
 	fclose(file);
 }
 
+
+/**
+ * This function validates if the pgm image block size is multiple of  dictionary block size 
+ *
+ * @param pgm_struct structure with the decoded file data
+ * @param dict_struct structure with the dictionary file data
+ * @return int returns  -1 if the ditictionary block size is invalid, returns 0 the otherwise
+ */ 
 int validate_dic_pgm(pgm_t pgm_struct, dic_t dic_struct)
 {
-	/*DEBUG("PGM WIDTH: %d", pgm_struct.header.width);
-	DEBUG("PGM WIDTH: %d", pgm_struct.header.height);
-	DEBUG("DIC BLOCK_WIDTH: %d", dic_struct.block_width);
-	DEBUG("DIC BLOCK_HEIGHT: %d", dic_struct.block_height);*/
 	if (pgm_struct.header.width % dic_struct.block_width != 0 || pgm_struct.header.height % dic_struct.block_height != 0)
 	{
-
 		return -1;
 	}
 	else
 	{
 		return 0;
 	}
-
-
-	//test case: t01-p2-2x2-02.pgm; PGM width is not a multiple of dictionary block width; FAILURE
-
 }
 
+
+/**
+ * This function writes z5 cod file
+ *
+ * @param cod_struct structure to the encoded file
+ * @param filename filename of encoded file
+ * @return void
+ */ 
 void write_z5_cod_to_file(pgmCod_t cod_struct, char *filename)
 {
-	//DEBUG("FILENAME: %s", cod_struct.filename);
-	
 	char dname[MAX_FNAME];
 	strcpy(dname, dirname(filename));
 	char complete_filename[MAX_FNAME];
@@ -454,9 +436,7 @@ void write_z5_cod_to_file(pgmCod_t cod_struct, char *filename)
 	strcat(complete_filename, "/");
 	strcat(complete_filename, cod_struct.filename);
 
-	//DEBUG("COMPLETE FILENAME: %s", complete_filename);
-
-
+	
 	FILE *file;
 	file = fopen(complete_filename, "w");
 
@@ -467,7 +447,7 @@ void write_z5_cod_to_file(pgmCod_t cod_struct, char *filename)
 
 	int bytesToWrite = 1;
 	int i;
-	//int hex;
+	
 	if(cod_struct.max_value >=256 ) {
 
 		bytesToWrite = 2;
@@ -479,11 +459,7 @@ void write_z5_cod_to_file(pgmCod_t cod_struct, char *filename)
 		aux = (unsigned short)cod_struct.indexVector_ptr[i];
 
 		fwrite(&aux, bytesToWrite, 1, file);	
-		//hex = HEX(cod_struct.indexVector_ptr[i]);
-        //        fputc(hex, file);
+		
 	}
-	//fwrite(cod_struct.indexVector_ptr,sizeof(cod_struct.indexVector_ptr),1,file);
-	
-
 	fclose(file);
 }
