@@ -8,8 +8,10 @@ var searchData=
   ['decode_5fgiven',['decode_given',['../structgengetopt__args__info.html#a81e6fb4452d3d35d3d7c7c2756da1758',1,'gengetopt_args_info']]],
   ['decode_5fhelp',['decode_help',['../structgengetopt__args__info.html#a39def96c6bc0331ae3da8fdfc598901a',1,'gengetopt_args_info']]],
   ['decode_5forig',['decode_orig',['../structgengetopt__args__info.html#a644ec685e6e8744ec5d1f8ba7599b689',1,'gengetopt_args_info']]],
+  ['dic_5fstruct',['dic_struct',['../structPARAM__T.html#a22e6649a9e7380fe0df609a4cf8d4aed',1,'PARAM_T']]],
   ['dict_5farg',['dict_arg',['../structgengetopt__args__info.html#aac983ce261d786f26f087a839c2ef9a0',1,'gengetopt_args_info']]],
   ['dict_5fgiven',['dict_given',['../structgengetopt__args__info.html#a2137b690a3a685f8c373ca1f2b75a852',1,'gengetopt_args_info']]],
   ['dict_5fhelp',['dict_help',['../structgengetopt__args__info.html#aadf00f1fa374c83519aa8948d73d24a2',1,'gengetopt_args_info']]],
-  ['dict_5forig',['dict_orig',['../structgengetopt__args__info.html#acca4a4510495e721e10c44306b85381a',1,'gengetopt_args_info']]]
+  ['dict_5forig',['dict_orig',['../structgengetopt__args__info.html#acca4a4510495e721e10c44306b85381a',1,'gengetopt_args_info']]],
+  ['distortion',['distortion',['../structblock__distortion__t.html#aa6533f4a628766d9eb6e2f2da7b8c631',1,'block_distortion_t']]]
 ];

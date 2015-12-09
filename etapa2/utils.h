@@ -1,3 +1,10 @@
+/**
+ * @file utils.h
+ * @brief Description - this files holds the functions prototypes and structures of the file utils.c
+ * @author Paulo Penicheiro nº 2130628 Ruben Miguel nº 2130664
+ * @date Dezembro - 2015
+ * @version 1 
+ */
 #ifndef	__UTILS_H__
 #define __UTILS_H__
 
@@ -28,8 +35,8 @@
 
 
 typedef struct {
-	int block_index;
-	int distortion;
+	int block_index;   /**< block index > **/
+	int distortion;		/**< distortion value > **/
 } block_distortion_t;
 
 typedef struct 
@@ -37,10 +44,10 @@ typedef struct
 	pthread_mutex_t mutex;		/**< mutex to access shared_task_ID **/
 	int shared_task_ID;			/**< keeps the current task id **shared** **/
 	int total_tasks;			/**< number of tasks **/
-	int num_blocks_per_line;
-	pgm_t pgm_struct;
-	dic_t dic_struct;
-	pgmCod_t cod_struct;
+	int num_blocks_per_line;	/**< Nuymber of Blocks Per Line > **/
+	pgm_t pgm_struct;			/**< PGM file structure > **/
+	dic_t dic_struct;			/**< Dictionary file structure > **/
+	pgmCod_t cod_struct;		/**< Encoded File Structure > **/
 } PARAM_T;
 
 

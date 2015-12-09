@@ -1,8 +1,8 @@
 <map id="utils.c" name="utils.c">
-<area shape="rect" id="node2" href="$utils_8h_source.html" title="utils.h" alt="" coords="605,80,661,107"/>
+<area shape="rect" id="node2" href="$utils_8h.html" title="Description &#45; this files holds the functions prototypes and structures of the file utils..." alt="" coords="605,80,661,107"/>
 <area shape="rect" id="node13" href="$pgm_8h.html" title="Function to handle PGM files. " alt="" coords="864,155,921,181"/>
 <area shape="rect" id="node14" href="$dic_8h.html" title="Function to parse a DIC file. " alt="" coords="947,155,997,181"/>
 <area shape="rect" id="node15" href="$memory_8h.html" title="Macros para gestÃ£o de memÃ³ria. " alt="" coords="1021,155,1100,181"/>
 <area shape="rect" id="node16" href="$debug_8h.html" title="Macros das funções de depuração " alt="" coords="1126,155,1193,181"/>
-<area shape="rect" id="node17" href="$pgmCod_8h_source.html" title="pgmCod.h" alt="" coords="1219,155,1300,181"/>
+<area shape="rect" id="node17" href="$pgmCod_8h.html" title="Description &#45; this files holds the structure of the enconded file. " alt="" coords="1219,155,1300,181"/>
 </map>

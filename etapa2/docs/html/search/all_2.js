@@ -19,6 +19,7 @@ var searchData=
   ['cmdline_5fparser_5fprint_5fversion',['cmdline_parser_print_version',['../cmdline_8h.html#a96f27bf35ce0ab8eea7a1f6e6b59a5e2',1,'cmdline_parser_print_version(void):&#160;cmdline.c'],['../config_8h.html#a96f27bf35ce0ab8eea7a1f6e6b59a5e2',1,'cmdline_parser_print_version(void):&#160;cmdline.c']]],
   ['cmdline_5fparser_5frequired',['cmdline_parser_required',['../cmdline_8h.html#a83651e5be280d60aed58fdb72456a030',1,'cmdline_parser_required(struct gengetopt_args_info *args_info, const char *prog_name):&#160;cmdline.c'],['../config_8h.html#a83651e5be280d60aed58fdb72456a030',1,'cmdline_parser_required(struct gengetopt_args_info *args_info, const char *prog_name):&#160;cmdline.c']]],
   ['cmdline_5fparser_5fversion',['CMDLINE_PARSER_VERSION',['../cmdline_8h.html#a1eeca7dc254bf6867ba9635f45771471',1,'CMDLINE_PARSER_VERSION():&#160;cmdline.h'],['../config_8h.html#a1eeca7dc254bf6867ba9635f45771471',1,'CMDLINE_PARSER_VERSION():&#160;config.h']]],
+  ['cod_5fstruct',['cod_struct',['../structPARAM__T.html#adfbb695ac8a587d4bf7eaf44be011d12',1,'PARAM_T']]],
   ['columns',['columns',['../structpgmCod__t.html#af03dec572a8fb9cff94189fe1be1dfe7',1,'pgmCod_t']]],
   ['config_2eh',['config.h',['../config_8h.html',1,'']]]
 ];

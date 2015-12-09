@@ -4,6 +4,7 @@ var searchData=
   ['parallel_5fencode_5fgiven',['parallel_encode_given',['../structgengetopt__args__info.html#af70880d2e672722909bb624fd47e67f3',1,'gengetopt_args_info']]],
   ['parallel_5fencode_5fhelp',['parallel_encode_help',['../structgengetopt__args__info.html#a8518c070a081f81d1092578f53459751',1,'gengetopt_args_info']]],
   ['parallel_5fencode_5forig',['parallel_encode_orig',['../structgengetopt__args__info.html#aed4928a51c33857c16e2ea0a4fa2ca2a',1,'gengetopt_args_info']]],
+  ['pgm_5fstruct',['pgm_struct',['../structPARAM__T.html#aaa01d0bd209ebacf17dcfd8ce3c70f45',1,'PARAM_T']]],
   ['pgm_5ftype',['pgm_type',['../structpgmCod__t.html#aa5c4e89418823ac80d6c0af0d4db3da7',1,'pgmCod_t']]],
   ['pixels',['pixels',['../structdic__t.html#ab196d2cfe35a58fb137dd8ab366389dd',1,'dic_t::pixels()'],['../structpgm__t.html#a452d2f4dd22b4b515812ce3f6676649d',1,'pgm_t::pixels()']]],
   ['print_5ferrors',['print_errors',['../structcmdline__parser__params.html#a3236f066777488e8502abe05ccd24455',1,'cmdline_parser_params']]],
