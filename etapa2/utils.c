@@ -61,7 +61,7 @@ void process_signal(int signum){
   	{
 	  	time ( &rawtime );
 	  	now_time = gmtime ( &rawtime );
-		fprintf(stderr, "\n[SIGINT] - Operation interrupted by user @%d-%02d-%02d %02dh%02d\n" ,now_time->tm_year+1900, now_time->tm_mon, now_time->tm_mday, now_time->tm_hour, now_time->tm_min);
+		fprintf(stderr, "\n[SIGINT] - Operation interrupted by user @%d-%02d-%02d %02dh%02d\n" ,now_time->tm_year+1900, now_time->tm_mon+1, now_time->tm_mday, now_time->tm_hour, now_time->tm_min);
 		fcloseall();
 		exit(0);
   	}
