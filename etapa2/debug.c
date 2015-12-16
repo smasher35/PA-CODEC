@@ -88,7 +88,7 @@ void warning(const char *file, const int line, char *fmt, ...)
  * @param exitCode valor passado à função "exit()"
  * @param fmt string de formatação como no "printf"
  * @param ... nº variável de parâmetros
- * @return A função não retorna nada
+ * @return A função não retorna nada.
  * @see ERROR
  */
 void error(const char *file, const int line, int exitCode, char *fmt, ...)

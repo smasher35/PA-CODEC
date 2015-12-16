@@ -1,10 +1,10 @@
 /**
  * @file debug.h
- * @brief Macros das funções de depuração
+ * @brief Macros das funÃ§Ãµes de depuraÃ§Ã£o
  *
- * Macros que serão usadas nos programas desenvolvidos ao longo dos
- * exemplos. Estas macros podem receber um número variável de parâmetros
- * através de uma string de formatação como no "printf". Seguem-se alguns 
+ * Macros que serÃ£o usadas nos programas desenvolvidos ao longo dos
+ * exemplos. Estas macros podem receber um nÃºmero variÃ¡vel de parÃ¢metros
+ * atravÃ©s de uma string de formataÃ§Ã£o como no "printf". Seguem-se alguns 
  * exemplos: 
  * @code
  * DEBUG("i = %d e f=.2f%", i, f);
@@ -26,34 +26,34 @@ void h_error(const char *file, const int line, int exitCode, char *fmt,
 
 
 /**
- * Macro para imprimir no stderr informações úteis 
- * para depuração. O número de parâmetros de entrada
- * é variável.
+ * Macro para imprimir no stderr informaÃ§Ãµes Ãºteis 
+ * para depuraÃ§Ã£o. O nÃºmero de parÃ¢metros de entrada
+ * Ã© variÃ¡vel.
  * 
- * @return A função não retorna nada
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see debug()
  */
 #define DEBUG(...) debug(__FILE__, __LINE__, __VA_ARGS__)
 
 
 /**
- * Macro para imprimir no stderr informação relacionada
- * com insucesso de chamadas de funções, mas não termina a
- * execução do programa. O número de parâmetros de entrada
- * é variável.
+ * Macro para imprimir no stderr informaÃ§Ã£o relacionada
+ * com insucesso de chamadas de funÃ§Ãµes, mas nÃ£o termina a
+ * execuÃ§Ã£o do programa. O nÃºmero de parÃ¢metros de entrada
+ * Ã© variÃ¡vel.
  *
- * @return A função não retorna nada
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see warning()
  */
 #define WARNING(...) warning(__FILE__, __LINE__, __VA_ARGS__)
 
 
 /**
- * Macro para imprimir no stderr informação relacionada
- * com insucesso de chamadas de funções e termina a execução
- * do programa. O número de parâmetros de entrada é variável.
+ * Macro para imprimir no stderr informaÃ§Ã£o relacionada
+ * com insucesso de chamadas de funÃ§Ãµes e termina a execuÃ§Ã£o
+ * do programa. O nÃºmero de parÃ¢metros de entrada Ã© variÃ¡vel.
  *
- * @return A função não retorna nada
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see error()
  */
 #define ERROR(exitCode, ...) \
@@ -61,24 +61,24 @@ void h_error(const char *file, const int line, int exitCode, char *fmt,
 
 
 /**
- * Macro para imprimir no stderr informação relacionada
- * com insucesso de chamadas de funções de resolução de nomes,
- * mas não termina a execução do programa. O número de 
- * parâmetros de entrada é variável.
+ * Macro para imprimir no stderr informaÃ§Ã£o relacionada
+ * com insucesso de chamadas de funÃ§Ãµes de resoluÃ§Ã£o de nomes,
+ * mas nÃ£o termina a execuÃ§Ã£o do programa. O nÃºmero de 
+ * parÃ¢metros de entrada Ã© variÃ¡vel.
  *
- * @return A função não retorna nada
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see h_warning()
  */
 #define H_WARNING(...) h_warning(__FILE__, __LINE__, __VA_ARGS__)
 
 
 /**
- * Macro para imprimir no stderr informação relacionada
- * com insucesso de chamadas de funções de resolução de nomes 
- * e termina a execução do programa. O número de parâmetros
- * de entrada é variável.
+ * Macro para imprimir no stderr informaÃ§Ã£o relacionada
+ * com insucesso de chamadas de funÃ§Ãµes de resoluÃ§Ã£o de nomes 
+ * e termina a execuÃ§Ã£o do programa. O nÃºmero de parÃ¢metros
+ * de entrada Ã© variÃ¡vel.
  *
- * @return A função não retorna nada
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see h_error()
  */
 #define H_ERROR(exitCode, ...) \
