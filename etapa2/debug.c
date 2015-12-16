@@ -1,10 +1,10 @@
 /**
  * @file debug.c
- * @brief Funções de depuração
+ * @brief FunÃ§Ãµes de depuraÃ§Ã£o
  *
- * Funções de depuração que serão chamadas através das respectivas
- * macros definidas no ficheiro debug.h. O objectivo destas funções 
- * é auxiliar o tratamento de erros e a depuração
+ * FunÃ§Ãµes de depuraÃ§Ã£o que serÃ£o chamadas atravÃ©s das respectivas
+ * macros definidas no ficheiro debug.h. O objectivo destas funÃ§Ãµes 
+ * Ã© auxiliar o tratamento de erros e a depuraÃ§Ã£o
  *
  * @author Miguel Frade, Patricio Domingues, Vitor Carreira
  * @date Agosto de 2003
@@ -20,17 +20,17 @@
 #include "debug.h"
 
 /**
- * Esta função deve ser utilizada para auxiliar a depuração de programas.
- * Esta função <b>não deve</b> ser chamada directamente, mas sim através
+ * Esta funÃ§Ã£o deve ser utilizada para auxiliar a depuraÃ§Ã£o de programas.
+ * Esta funÃ§Ã£o <b>nÃ£o deve</b> ser chamada directamente, mas sim atravÃ©s
  * da macro DEBUG().
  *
  * @param file nome do ficheiro
- * 	       (através da macro DEBUG)
- * @param line linha onde a função foi chamada
- * 	       (através da macro DEBUG)
- * @param fmt string de formatação como no "printf"
- * @param ... nº variável de parâmetros
- * @return A função não retorna nada
+ * 	       (atravÃ©s da macro DEBUG)
+ * @param line linha onde a funÃ§Ã£o foi chamada
+ * 	       (atravÃ©s da macro DEBUG)
+ * @param fmt string de formataÃ§Ã£o como no "printf"
+ * @param ... nÂº variÃ¡vel de parÃ¢metros
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see DEBUG
  */
 void debug(const char *file, const int line, char *fmt, ...)
@@ -47,18 +47,18 @@ void debug(const char *file, const int line, char *fmt, ...)
 
 
 /**
- * Função que envia para o canal de erros a mensagem "WARNING" rotulada
- * com o nome do ficheiro e da linha da função chamante e ainda da mensagem de
- * erro do sistema. A função <b>não deve</b> ser chamada directamente, mas sim
- * através da macro WARNING().
+ * FunÃ§Ã£o que envia para o canal de erros a mensagem "WARNING" rotulada
+ * com o nome do ficheiro e da linha da funÃ§Ã£o chamante e ainda da mensagem de
+ * erro do sistema. A funÃ§Ã£o <b>nÃ£o deve</b> ser chamada directamente, mas sim
+ * atravÃ©s da macro WARNING().
  *
- * @param file nome do ficheiro fonte da função chamante
- * 	       (através da macro WARNING)
- * @param line linha onde a função foi chamada
- * 	       (através da macro WARNING)
- * @param fmt string de formatação como no "printf"
- * @param ... nº variável de parâmetros
- * @return A função não retorna nada
+ * @param file nome do ficheiro fonte da funÃ§Ã£o chamante
+ * 	       (atravÃ©s da macro WARNING)
+ * @param line linha onde a funÃ§Ã£o foi chamada
+ * 	       (atravÃ©s da macro WARNING)
+ * @param fmt string de formataÃ§Ã£o como no "printf"
+ * @param ... nÂº variÃ¡vel de parÃ¢metros
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see WARNING
  */
 void warning(const char *file, const int line, char *fmt, ...)
@@ -76,19 +76,19 @@ void warning(const char *file, const int line, char *fmt, ...)
 
 
 /**
- * Função que envia para o canal de erros a mensagem "ERROR" rotulada
- * com o nome do ficheiro e da linha da função chamante, e ainda da mensagem de
- * erro do sistema. A função <b>não deve</b> ser chamada directamente, mas sim
- * através da macro ERROR().
+ * FunÃ§Ã£o que envia para o canal de erros a mensagem "ERROR" rotulada
+ * com o nome do ficheiro e da linha da funÃ§Ã£o chamante, e ainda da mensagem de
+ * erro do sistema. A funÃ§Ã£o <b>nÃ£o deve</b> ser chamada directamente, mas sim
+ * atravÃ©s da macro ERROR().
  *
- * @param file nome do ficheiro fonte da função chamante
- * 	       (através da macro ERROR)
- * @param line linha onde a função foi chamada
- * 	       (através da macro ERROR)
- * @param exitCode valor passado à função "exit()"
- * @param fmt string de formatação como no "printf"
- * @param ... nº variável de parâmetros
- * @return A função não retorna nada
+ * @param file nome do ficheiro fonte da funÃ§Ã£o chamante
+ * 	       (atravÃ©s da macro ERROR)
+ * @param line linha onde a funÃ§Ã£o foi chamada
+ * 	       (atravÃ©s da macro ERROR)
+ * @param exitCode valor passado Ã  funÃ§Ã£o "exit()"
+ * @param fmt string de formataÃ§Ã£o como no "printf"
+ * @param ... nÂº variÃ¡vel de parÃ¢metros
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see ERROR
  */
 void error(const char *file, const int line, int exitCode, char *fmt, ...)
@@ -106,18 +106,18 @@ void error(const char *file, const int line, int exitCode, char *fmt, ...)
 
 
 /**
- * Função que envia para o canal de erros a mensagem "H_WARNING" rotulada
- * com o nome do ficheiro e da linha da função chamante, e ainda da mensagem de
- * erro do sistema. A função <b>não deve</b> ser chamada directamente, mas sim
- * através da macro H_WARNING().
+ * FunÃ§Ã£o que envia para o canal de erros a mensagem "H_WARNING" rotulada
+ * com o nome do ficheiro e da linha da funÃ§Ã£o chamante, e ainda da mensagem de
+ * erro do sistema. A funÃ§Ã£o <b>nÃ£o deve</b> ser chamada directamente, mas sim
+ * atravÃ©s da macro H_WARNING().
  *
- * @param file nome do ficheiro fonte da função chamante
- * 	       (através da macro H_WARNING)
- * @param line linha onde a função foi chamada
- * 	       (através da macro H_WARNING)
- * @param fmt string de formatação como no "printf"
- * @param ... nº variável de parâmetros
- * @return A função não retorna nada
+ * @param file nome do ficheiro fonte da funÃ§Ã£o chamante
+ * 	       (atravÃ©s da macro H_WARNING)
+ * @param line linha onde a funÃ§Ã£o foi chamada
+ * 	       (atravÃ©s da macro H_WARNING)
+ * @param fmt string de formataÃ§Ã£o como no "printf"
+ * @param ... nÂº variÃ¡vel de parÃ¢metros
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see H_WARNING
  */
 void h_warning(const char *file, const int line, char *fmt, ...)
@@ -134,19 +134,19 @@ void h_warning(const char *file, const int line, char *fmt, ...)
 
 
 /**
- * Função que envia para o canal de erros a mensagem "H_ERROR" rotulada
- * com o nome do ficheiro e da linha da função chamante, e ainda da mensagem de
- * erro do sistema. A função <b>não deve</b> ser chamada directamente, mas sim
- * através da macro H_ERROR().
+ * FunÃ§Ã£o que envia para o canal de erros a mensagem "H_ERROR" rotulada
+ * com o nome do ficheiro e da linha da funÃ§Ã£o chamante, e ainda da mensagem de
+ * erro do sistema. A funÃ§Ã£o <b>nÃ£o deve</b> ser chamada directamente, mas sim
+ * atravÃ©s da macro H_ERROR().
  *
- * @param file nome do ficheiro fonte da função chamante 
- * 	       (através da macro H_ERROR)
- * @param line linha onde a função foi chamada
- * 	       (através da macro H_ERROR)
- * @param exitCode valor passado à função "exit()"
- * @param fmt string de formatação como no "printf"
- * @param ... nº variável de parâmetros
- * @return A função não retorna nada
+ * @param file nome do ficheiro fonte da funÃ§Ã£o chamante 
+ * 	       (atravÃ©s da macro H_ERROR)
+ * @param line linha onde a funÃ§Ã£o foi chamada
+ * 	       (atravÃ©s da macro H_ERROR)
+ * @param exitCode valor passado Ã  funÃ§Ã£o "exit()"
+ * @param fmt string de formataÃ§Ã£o como no "printf"
+ * @param ... nÂº variÃ¡vel de parÃ¢metros
+ * @return A funÃ§Ã£o nÃ£o retorna nada
  * @see H_ERROR
  */
 void h_error(const char *file, const int line, int exitCode, char *fmt,
