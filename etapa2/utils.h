@@ -33,7 +33,6 @@
 #define C_ERRO_CONDITION_INIT           5
 #define C_ERRO_CONDITION_DESTROY        6
 
-
 typedef struct {
 	int block_index;   /**< block index > **/
 	int distortion;		/**< distortion value > **/

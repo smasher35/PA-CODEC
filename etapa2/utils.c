@@ -390,12 +390,11 @@ void write_z2_cod_to_file(pgmCod_t cod_struct, char *filename)
 	fprintf(file, "%d %d\n", cod_struct.block_width, cod_struct.block_height);
 
 	int i;
+
 	for (i=0; i<cod_struct.num_blocks; i++)
-	{
-		
+	{		
 		fprintf(file, "%d\n", cod_struct.indexVector_ptr[i]);
 	}
-
 	fclose(file);
 }
 
@@ -445,20 +444,19 @@ void write_z5_cod_to_file(pgmCod_t cod_struct, char *filename)
 	fprintf(file, "%d\n", cod_struct.max_value);
 	fprintf(file, "%d %d\n", cod_struct.block_width, cod_struct.block_height);
 
-	int bytesToWrite = 1;
+	int bytesToWriteAtOnce = 1;
 	int i;
 	
 	if(cod_struct.max_value >=256 ) {
 
-		bytesToWrite = 2;
+		bytesToWriteAtOnce = 2;
 
 	}
 	for (i=0; i<cod_struct.num_blocks; i++)
 	{
 		unsigned short aux;
 		aux = (unsigned short)cod_struct.indexVector_ptr[i];
-
-		fwrite(&aux, bytesToWrite, 1, file);	
+		fwrite(&aux, bytesToWriteAtOnce, 1, file);	
 		
 	}
 	fclose(file);

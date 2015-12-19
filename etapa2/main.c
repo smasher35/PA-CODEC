@@ -36,8 +36,6 @@ int main(int argc, char *argv[]) {
     dic_t dic = dic_init();
 
     install_signal_handler();
-    
-    // TODO: Measure execution time (use gettimeofday or clock_gettime)
 
     /** About the authors */
      if (args.about_given){
